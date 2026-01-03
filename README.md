@@ -1,4 +1,4 @@
-# Neon Horizon
+
 
 Personal portfolio site built with Vite, React, TypeScript, Tailwind CSS, and shadcn/ui.
 
