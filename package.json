@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "spotify:refresh-token": "node scripts/spotify-refresh-token.mjs"
+    "spotify:refresh-token": "node --env-file=.env scripts/spotify-refresh-token.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
