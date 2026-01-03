@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Github, Linkedin, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,9 +39,9 @@ const Footer = () => {
   ];
 
   const socials = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:hello@alioudah.dev', label: 'Email' },
+    { icon: Github, href: 'https://github.com/vstq5', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/ali-oudah', label: 'LinkedIn' },
+    { icon: Mail, href: 'mailto:alialoudah5@gmail.com', label: 'Email' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -113,10 +113,7 @@ const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
-            © 2026 Ali Oudah. Made with{' '}
-            <Heart className="w-4 h-4 text-primary fill-primary" /> and code.
-          </p>
+          <p className="text-sm text-muted-foreground">© 2026 Ali Oudah</p>
         </div>
       </div>
     </footer>

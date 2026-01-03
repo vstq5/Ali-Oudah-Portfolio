@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 gsap.registerPlugin(ScrollTrigger);
 
 const Contact = () => {
+  const TO_EMAIL = 'alialoudah5@gmail.com';
+
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -20,6 +22,8 @@ const Contact = () => {
     email: '',
     message: '',
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -81,8 +85,20 @@ const Contact = () => {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const openMailtoFallback = () => {
+    const subject = encodeURIComponent(`Portfolio message from ${formData.name}`);
+    const body = encodeURIComponent(
+      [`Name: ${formData.name}`, `Email: ${formData.email}`, '', formData.message].join('\n')
+    );
+
+    window.location.href = `mailto:${TO_EMAIL}?subject=${subject}&body=${body}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     // Animate button
     gsap.to(e.currentTarget.querySelector('button[type="submit"]'), {
@@ -93,17 +109,40 @@ const Contact = () => {
       ease: 'power2.inOut',
     });
 
-    toast.success('Message sent successfully!', {
-      description: "I'll get back to you as soon as possible.",
-    });
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    setFormData({ name: '', email: '', message: '' });
+      if (res.ok) {
+        toast.success('Message sent successfully!', {
+          description: "I'll get back to you as soon as possible.",
+        });
+        setFormData({ name: '', email: '', message: '' });
+        return;
+      }
+
+      // If API isn't configured (or any error), fall back to mailto.
+      toast.message('Almost there — sending via email app', {
+        description: 'If the form send is not configured, your email app will open as a fallback.',
+      });
+      openMailtoFallback();
+    } catch {
+      toast.message('Opening email app…', {
+        description: 'Unable to send automatically. Your email app will open as a fallback.',
+      });
+      openMailtoFallback();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socials = [
-    { icon: Github, href: 'https://github.com', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:hello@alioudah.dev', label: 'Email' },
+    { icon: Github, href: 'https://github.com/vstq5', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/ali-oudah', label: 'LinkedIn' },
+    { icon: Mail, href: `mailto:${TO_EMAIL}`, label: 'Email' },
   ];
 
   return (
@@ -164,10 +203,11 @@ const Contact = () => {
             <Button
               type="submit"
               size="lg"
+              disabled={isSubmitting}
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 hover:shadow-glow-orange h-12"
             >
               <Send className="mr-2" size={18} />
-              Send Message
+              {isSubmitting ? 'Sending…' : 'Send Message'}
             </Button>
           </form>
 
