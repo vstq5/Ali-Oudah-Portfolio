@@ -75,7 +75,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           Ali <span className="text-primary font-medium">Oudah</span>
         </h1>
         <p className="text-muted-foreground text-lg tracking-widest uppercase">
-          Web Developer
+          IT Specialist
         </p>
       </div>
 

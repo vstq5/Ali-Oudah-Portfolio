@@ -164,7 +164,7 @@ const Contact = () => {
               Let's <span className="text-primary font-medium">Connect</span>
             </h2>
             <p className="text-muted-foreground mt-4">
-              Have a project in mind? Let's create something amazing together.
+              Need help with IT support, troubleshooting, setup, or automation? Send a message and I’ll get back to you.
             </p>
           </div>
 

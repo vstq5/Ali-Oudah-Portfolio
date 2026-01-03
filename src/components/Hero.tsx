@@ -170,7 +170,7 @@ const Hero = ({ introReady = true }: HeroProps) => {
           <span className="text-primary font-medium">Ali Oudah</span>
           <br />
           <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-muted-foreground">
-            Web Developer
+            IT Specialist
           </span>
         </h1>
 
@@ -178,8 +178,8 @@ const Hero = ({ introReady = true }: HeroProps) => {
           ref={subtitleRef}
           className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 opacity-0"
         >
-          Crafting immersive digital experiences with cutting-edge technologies,
-          stunning animations, and pixel-perfect precision.
+          Keeping systems reliable, secure, and efficient — with a passion for clean
+          automation and modern digital experiences.
         </p>
 
         <div ref={ctaRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0">
@@ -191,7 +191,7 @@ const Hero = ({ introReady = true }: HeroProps) => {
               if (element) element.scrollIntoView({ behavior: 'smooth' });
             }}
           >
-            Hire Me
+            Contact Me
           </Button>
           <Button
             variant="outline"

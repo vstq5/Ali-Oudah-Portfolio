@@ -5,21 +5,19 @@ import { Button } from '@/components/ui/button';
 import LiveStatus from '@/components/LiveStatus';
 import SpotifyNowPlaying from '@/components/SpotifyNowPlaying';
 import {
-  siHtml5,
-  siCss,
-  siJavascript,
-  siReact,
-  siTypescript,
+  siCisco,
+  siLinux,
+  siPython,
+  siVmware,
 } from 'simple-icons';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const skills = [
-  { name: 'HTML5', icon: siHtml5 },
-  { name: 'CSS3', icon: siCss },
-  { name: 'JavaScript', icon: siJavascript },
-  { name: 'React', icon: siReact },
-  { name: 'TypeScript', icon: siTypescript },
+  { name: 'Linux', icon: siLinux },
+  { name: 'Cisco', icon: siCisco },
+  { name: 'VMware', icon: siVmware },
+  { name: 'Python', icon: siPython },
 ];
 
 const About = () => {
@@ -166,7 +164,7 @@ const About = () => {
               />
               <img
                 src={profileImage}
-                alt="Ali Oudah - Web Developer"
+                alt="Ali Oudah - IT Specialist"
                 className="relative z-10 w-full h-auto select-none pointer-events-none origin-bottom scale-[1.06]"
                 style={{
                   WebkitMaskImage:
@@ -219,13 +217,11 @@ const About = () => {
               ))}
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed md:leading-loose mb-10">
-              I'm a creative web developer with a passion for building{' '}
-              <strong className="font-semibold text-foreground">immersive, high-performance</strong>{' '}
-              websites and applications. With expertise in{' '}
-              <strong className="font-semibold text-foreground">modern frontend technologies</strong> and{' '}
-              <strong className="font-semibold text-foreground">animation libraries</strong>, I bring
-              designs to life with <strong className="font-semibold text-foreground">smooth interactions</strong>{' '}
-              and <strong className="font-semibold text-foreground">stunning visual effects</strong>.
+              I'm an <strong className="font-semibold text-foreground">IT Specialist</strong> focused on
+              <strong className="font-semibold text-foreground"> troubleshooting</strong>,
+              <strong className="font-semibold text-foreground"> system administration</strong>, and
+              <strong className="font-semibold text-foreground"> user support</strong>. I enjoy keeping
+              environments stable and secure, and I build simple automation and tools that make day-to-day work faster.
             </p>
 
             {/* CTA */}
