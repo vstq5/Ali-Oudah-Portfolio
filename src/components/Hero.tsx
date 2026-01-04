@@ -128,12 +128,13 @@ const Hero = ({ introReady = true, onSplineReady }: HeroProps) => {
               window.requestAnimationFrame(() => {
                 window.dispatchEvent(new Event('resize'));
                 window.setTimeout(() => {
+                  window.dispatchEvent(new Event('resize'));
                   setSplineReady(true);
                   if (!splineNotifiedRef.current) {
                     splineNotifiedRef.current = true;
                     onSplineReady?.();
                   }
-                }, 150);
+                }, 350);
               });
             });
           }}

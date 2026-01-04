@@ -37,7 +37,7 @@ const Index = () => {
         <Preloader
           onComplete={handleLoadComplete}
           canComplete={isSplineReady}
-          maxWaitMs={12000}
+          maxWaitMs={20000}
         />
       )}
 
