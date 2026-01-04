@@ -3,17 +3,32 @@ import gsap from 'gsap';
 
 interface PreloaderProps {
   onComplete: () => void;
+  canComplete?: boolean;
+  maxWaitMs?: number;
 }
 
-const Preloader = ({ onComplete }: PreloaderProps) => {
+const Preloader = ({ onComplete, canComplete = true, maxWaitMs = 12000 }: PreloaderProps) => {
   const preloaderRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const percentRef = useRef<HTMLSpanElement>(null);
   const lastPercentRef = useRef<number>(-1);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const progressDoneRef = useRef(false);
+  const canCompleteRef = useRef(canComplete);
+  const forcedCompleteRef = useRef(false);
 
   useEffect(() => {
-    const tl = gsap.timeline();
+    canCompleteRef.current = canComplete;
+    if (!timelineRef.current) return;
+    if (progressDoneRef.current && (canComplete || forcedCompleteRef.current)) {
+      timelineRef.current.play();
+    }
+  }, [canComplete]);
+
+  useEffect(() => {
+    const tl = gsap.timeline({ paused: false });
+    timelineRef.current = tl;
 
     if (progressRef.current) {
       gsap.set(progressRef.current, { transformOrigin: 'left center', scaleX: 0, force3D: true });
@@ -43,6 +58,14 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
       },
     });
 
+    // Hold at 100% until the app is ready to reveal (e.g., Spline loaded).
+    tl.add(() => {
+      progressDoneRef.current = true;
+      if (!canCompleteRef.current && !forcedCompleteRef.current) {
+        tl.pause();
+      }
+    });
+
     // Fade out preloader
     tl.to(preloaderRef.current, {
       opacity: 0,
@@ -58,10 +81,19 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
       },
     });
 
+    const safetyTimeout = window.setTimeout(() => {
+      forcedCompleteRef.current = true;
+      if (timelineRef.current && progressDoneRef.current) {
+        timelineRef.current.play();
+      }
+    }, maxWaitMs);
+
     return () => {
       tl.kill();
+      timelineRef.current = null;
+      window.clearTimeout(safetyTimeout);
     };
-  }, [onComplete]);
+  }, [maxWaitMs, onComplete]);
 
   return (
     <div ref={preloaderRef} className="preloader">

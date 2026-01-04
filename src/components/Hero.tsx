@@ -5,9 +5,10 @@ import { ArrowDown } from 'lucide-react';
 
 interface HeroProps {
   introReady?: boolean;
+  onSplineReady?: () => void;
 }
 
-const Hero = ({ introReady = true }: HeroProps) => {
+const Hero = ({ introReady = true, onSplineReady }: HeroProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -16,39 +17,8 @@ const Hero = ({ introReady = true }: HeroProps) => {
   const shape2Ref = useRef<HTMLDivElement>(null);
   const shape3Ref = useRef<HTMLDivElement>(null);
 
-  const [mountSpline, setMountSpline] = useState(false);
   const [splineReady, setSplineReady] = useState(false);
-
-  useEffect(() => {
-    if (!introReady) {
-      setMountSpline(false);
-      setSplineReady(false);
-      return;
-    }
-
-    // Always load Spline, but defer mounting the iframe until the browser is idle.
-    // This reduces the initial load spike on slower devices without disabling the model.
-    let timeoutId: number | undefined;
-    let idleId: number | undefined;
-
-    const mount = () => setMountSpline(true);
-
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      idleId = (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout?: number }) => number }).requestIdleCallback(
-        mount,
-        { timeout: 1200 }
-      );
-    } else {
-      timeoutId = window.setTimeout(mount, 250);
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && idleId !== undefined && 'cancelIdleCallback' in window) {
-        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
-      }
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-    };
-  }, [introReady]);
+  const splineNotifiedRef = useRef(false);
 
   useEffect(() => {
     if (!introReady) return;
@@ -125,10 +95,6 @@ const Hero = ({ introReady = true }: HeroProps) => {
     return () => ctx.revert();
   }, [introReady]);
 
-  useEffect(() => {
-    if (!mountSpline) setSplineReady(false);
-  }, [mountSpline]);
-
   const scrollToProjects = () => {
     const element = document.querySelector('#projects');
     if (element) {
@@ -148,26 +114,30 @@ const Hero = ({ introReady = true }: HeroProps) => {
           splineReady ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        {introReady && mountSpline && (
-          <iframe
-            src="https://my.spline.design/cutecomputerfollowcursor-nNmIobJtNf8Q4NuWVLZX02U6/"
-            frameBorder="0"
-            title="3D Background"
-            loading="eager"
-            fetchPriority="low"
-            onLoad={() => {
-              // Spline iframes can briefly render "unstable" while they settle and
-              // measure the final container size (especially after the intro overlay).
-              // Keep it hidden until it has a moment to stabilize, then fade it in.
+        <iframe
+          src="https://my.spline.design/cutecomputerfollowcursor-nNmIobJtNf8Q4NuWVLZX02U6/"
+          frameBorder="0"
+          title="3D Background"
+          loading="eager"
+          fetchPriority="high"
+          onLoad={() => {
+            // Spline iframes can briefly render "unstable" while they settle and
+            // measure the final container size (especially after the intro overlay).
+            // Keep it hidden until it has a moment to stabilize, then fade it in.
+            window.requestAnimationFrame(() => {
               window.requestAnimationFrame(() => {
-                window.requestAnimationFrame(() => {
-                  window.dispatchEvent(new Event('resize'));
-                  window.setTimeout(() => setSplineReady(true), 150);
-                });
+                window.dispatchEvent(new Event('resize'));
+                window.setTimeout(() => {
+                  setSplineReady(true);
+                  if (!splineNotifiedRef.current) {
+                    splineNotifiedRef.current = true;
+                    onSplineReady?.();
+                  }
+                }, 150);
               });
-            }}
-          />
-        )}
+            });
+          }}
+        />
       </div>
 
       {/* Gradient overlay for better text readability */}

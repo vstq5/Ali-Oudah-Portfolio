@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isSplineReady, setIsSplineReady] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('is-loading', isLoading);
@@ -32,7 +33,13 @@ const Index = () => {
   return (
     <>
       {/* Preloader */}
-      {isLoading && <Preloader onComplete={handleLoadComplete} />}
+      {isLoading && (
+        <Preloader
+          onComplete={handleLoadComplete}
+          canComplete={isSplineReady}
+          maxWaitMs={12000}
+        />
+      )}
 
       {/* Main content */}
       <div
@@ -42,7 +49,7 @@ const Index = () => {
       >
         <Navbar />
         <main>
-          <Hero introReady={!isLoading} />
+          <Hero introReady={!isLoading} onSplineReady={() => setIsSplineReady(true)} />
           <About />
           <Projects />
           <Contact />
