@@ -110,7 +110,7 @@ const Hero = ({ introReady = true }: HeroProps) => {
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-[100svh] flex items-center justify-center overflow-hidden"
     >
       {/* Spline 3D Model Overlay */}
       <div
@@ -161,7 +161,7 @@ const Hero = ({ introReady = true }: HeroProps) => {
       <div className="absolute z-10 top-1/4 right-1/4 w-[240px] h-[240px] md:w-[400px] md:h-[400px] bg-secondary/5 rounded-full blur-2xl md:blur-3xl pointer-events-none" />
 
       {/* Content */}
-      <div className="relative z-20 text-center px-6 max-w-4xl pointer-events-none">
+      <div className="relative z-20 text-center px-6 max-w-4xl pointer-events-none pt-24 md:pt-0">
         <h1
           ref={headingRef}
           className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light tracking-tight mb-6 opacity-0"

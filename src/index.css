@@ -216,6 +216,24 @@ body.is-loading .noise-overlay {
 
 .spline-container iframe {
   @apply w-full h-full border-none;
+  touch-action: none;
+}
+
+/*
+  Interaction consistency:
+  - On hover-capable devices (mouse/trackpad), ensure the Spline iframe can receive pointer movement.
+  - On touch devices, avoid the iframe hijacking scroll/gestures.
+*/
+@media (hover: hover) and (pointer: fine) {
+  .spline-container iframe {
+    pointer-events: auto;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .spline-container iframe {
+    pointer-events: none;
+  }
 }
 
 /* Global noise overlay */
