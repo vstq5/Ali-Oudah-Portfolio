@@ -21,13 +21,22 @@ const Index = () => {
   const handleLoadComplete = useCallback(() => {
     setIsLoading(false);
 
-    // Spline (iframe) can mis-measure while the preloader covers the page.
-    // Nudge a resize after the main content becomes visible to stabilize layout.
-    window.requestAnimationFrame(() => {
-      window.setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 50);
+    // Using a ResizeObserver to trigger a resize event when main content appears
+    // This is more robust than a fixed timeout
+    const observer = new ResizeObserver(() => {
+      window.dispatchEvent(new Event('resize'));
     });
+
+    // Observe the main element once it's visible
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      observer.observe(mainElement);
+
+      // Clean up observer after a short delay once stable
+      setTimeout(() => {
+        observer.disconnect();
+      }, 1000);
+    }
   }, []);
 
   return (
@@ -43,9 +52,8 @@ const Index = () => {
 
       {/* Main content */}
       <div
-        className={`transition-opacity duration-500 ${
-          isLoading ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'
+          }`}
       >
         <Navbar />
         <main>

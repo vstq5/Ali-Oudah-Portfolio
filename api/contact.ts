@@ -1,6 +1,7 @@
 
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-function json(res: any, status: number, body: unknown) {
+function json(res: VercelResponse, status: number, body: unknown) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
@@ -17,7 +18,7 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return json(res, 405, { ok: false, error: 'Method not allowed' });
@@ -101,7 +102,7 @@ export default async function handler(req: any, res: any) {
     }
 
     return json(res, 200, { ok: true, id: emailJson?.id ?? null });
-  } catch {
+  } catch (e: unknown) {
     return json(res, 502, { ok: false, error: 'Email send failed' });
   }
 }

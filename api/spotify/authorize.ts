@@ -2,13 +2,15 @@
 
 import crypto from 'node:crypto';
 
-function buildBaseUrl(req: any) {
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+function buildBaseUrl(req: VercelRequest) {
   const forwardedProto = (req.headers?.['x-forwarded-proto'] as string | undefined) ?? 'https';
   const host = (req.headers?.['x-forwarded-host'] as string | undefined) ?? req.headers?.host;
   return `${forwardedProto}://${host}`;
 }
 
-function setCookie(res: any, name: string, value: string, options: {
+function setCookie(res: VercelResponse, name: string, value: string, options: {
   maxAgeSeconds?: number;
   httpOnly?: boolean;
   sameSite?: 'Lax' | 'Strict' | 'None';
@@ -25,7 +27,7 @@ function setCookie(res: any, name: string, value: string, options: {
   res.setHeader('Set-Cookie', parts.join('; '));
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method && req.method !== 'GET') {
     res.statusCode = 405;
     res.setHeader('Allow', 'GET');

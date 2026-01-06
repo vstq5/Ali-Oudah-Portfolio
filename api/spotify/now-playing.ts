@@ -1,6 +1,7 @@
 
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-function json(res: any, status: number, body: unknown) {
+function json(res: VercelResponse, status: number, body: unknown) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=60');
@@ -43,7 +44,7 @@ async function getAccessToken(params: {
   return json.access_token as string;
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method && req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return json(res, 405, { error: 'Method not allowed' });
@@ -91,7 +92,7 @@ export default async function handler(req: any, res: any) {
 
     const title = item?.name ?? '';
     const artist = Array.isArray(item?.artists)
-      ? item.artists.map((a: any) => a?.name).filter(Boolean).join(', ')
+      ? item.artists.map((a: { name: string }) => a?.name).filter(Boolean).join(', ')
       : '';
 
     const songUrl = item?.external_urls?.spotify ?? '';
@@ -108,7 +109,7 @@ export default async function handler(req: any, res: any) {
       songUrl,
       albumImageUrl,
     });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return json(res, 200, { isPlaying: false });
   }
 }

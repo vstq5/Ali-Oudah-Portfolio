@@ -3,15 +3,15 @@ import { siSpotify } from 'simple-icons';
 
 type NowPlayingResponse =
   | {
-      isPlaying: true;
-      title: string;
-      artist: string;
-      songUrl: string;
-      albumImageUrl: string;
-    }
+    isPlaying: true;
+    title: string;
+    artist: string;
+    songUrl: string;
+    albumImageUrl: string;
+  }
   | {
-      isPlaying: false;
-    };
+    isPlaying: false;
+  };
 
 function SpotifyMark() {
   return (
@@ -61,9 +61,9 @@ export default function SpotifyNowPlaying() {
         }
 
         setData(json);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (!mounted) return;
-        if (e?.name === 'AbortError') return;
+        if (e instanceof Error && e.name === 'AbortError') return;
         setError('Unable to load Spotify status');
         setData({ isPlaying: false });
       }

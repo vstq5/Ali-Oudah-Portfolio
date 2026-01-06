@@ -1,6 +1,8 @@
 
 
-function parseCookies(cookieHeader: string | undefined) {
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+function parseCookies(cookieHeader: string | undefined): Record<string, string> {
   const cookies: Record<string, string> = {};
   if (!cookieHeader) return cookies;
 
@@ -12,13 +14,13 @@ function parseCookies(cookieHeader: string | undefined) {
   return cookies;
 }
 
-function buildBaseUrl(req: any) {
+function buildBaseUrl(req: VercelRequest) {
   const forwardedProto = (req.headers?.['x-forwarded-proto'] as string | undefined) ?? 'https';
   const host = (req.headers?.['x-forwarded-host'] as string | undefined) ?? req.headers?.host;
   return `${forwardedProto}://${host}`;
 }
 
-function setCookie(res: any, name: string, value: string, options: {
+function setCookie(res: VercelResponse, name: string, value: string, options: {
   maxAgeSeconds?: number;
   httpOnly?: boolean;
   sameSite?: 'Lax' | 'Strict' | 'None';
@@ -35,7 +37,7 @@ function setCookie(res: any, name: string, value: string, options: {
   res.setHeader('Set-Cookie', parts.join('; '));
 }
 
-function html(res: any, status: number, body: string) {
+function html(res: VercelResponse, status: number, body: string) {
   res.statusCode = status;
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
@@ -75,7 +77,7 @@ async function exchangeCodeForTokens(params: {
   return json as { refresh_token?: string };
 }
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method && req.method !== 'GET') {
     res.statusCode = 405;
     res.setHeader('Allow', 'GET');
@@ -149,7 +151,7 @@ export default async function handler(req: any, res: any) {
 <p>Then redeploy your site.</p>
 `
     );
-  } catch (e: any) {
+  } catch (e: unknown) {
     return html(res, 500, '<h2>Token exchange failed</h2><p>Check your Spotify app settings and env vars.</p>');
   }
 }
