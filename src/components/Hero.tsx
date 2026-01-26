@@ -110,9 +110,8 @@ const Hero = ({ introReady = true, onSplineReady }: HeroProps) => {
     >
       {/* Spline 3D Model Overlay */}
       <div
-        className={`spline-container z-0 transition-opacity duration-700 ${
-          splineReady ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`spline-container z-0 transition-opacity duration-700 ${splineReady ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
       >
         <iframe
           src="https://my.spline.design/cutecomputerfollowcursor-nNmIobJtNf8Q4NuWVLZX02U6/"
@@ -169,10 +168,10 @@ const Hero = ({ introReady = true, onSplineReady }: HeroProps) => {
           className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-light tracking-tight mb-6 opacity-0"
         >
           Hi, I'm{' '}
-          <span className="text-primary font-medium">Ali Oudah</span>
+          <span className="text-primary font-medium">Ali Alosimi</span>
           <br />
           <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-muted-foreground">
-            IT Specialist
+            Software Engineer
           </span>
         </h1>
 

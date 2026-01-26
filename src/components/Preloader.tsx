@@ -104,10 +104,10 @@ const Preloader = ({ onComplete, canComplete = true, maxWaitMs = 12000 }: Preloa
       {/* Logo / Name */}
       <div ref={textRef} className="text-center z-10">
         <h1 className="text-5xl md:text-7xl font-light tracking-tight text-foreground mb-2">
-          Ali <span className="text-primary font-medium">Oudah</span>
+          Ali <span className="text-primary font-medium">Alosimi</span>
         </h1>
         <p className="text-muted-foreground text-lg tracking-widest uppercase">
-          IT Specialist
+          Software Engineer
         </p>
       </div>
 
@@ -123,7 +123,7 @@ const Preloader = ({ onComplete, canComplete = true, maxWaitMs = 12000 }: Preloa
       >
         0%
       </span>
-    </div>
+    </div >
   );
 };
 
