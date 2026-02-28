@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+/* Single combined Google Fonts request — avoids double DNS/connection overhead */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,42 +7,45 @@
 
 @layer base {
   :root {
-    /* Core colors - Deep Charcoal Theme */
-    --background: 0 0% 7%;
+    /* Core colors - True Black Cyberpunk Theme */
+    --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 10%;
+    --card: 0 0% 0%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 10%;
+    --popover: 0 0% 0%;
     --popover-foreground: 0 0% 100%;
 
-    /* Safety Orange - Primary accent */
-    --primary: 24 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    /* Liquid Silver/White - Primary text and highlights */
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 10%;
 
-    /* Neon Cyan - Secondary glow */
-    --secondary: 180 100% 50%;
-    --secondary-foreground: 0 0% 7%;
+    /* Deep Electric Purple - Secondary glow matching the Spline floor light */
+    --secondary: 280 100% 65%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 180 100% 50%;
-    --accent-foreground: 0 0% 7%;
+    --accent: 285 100% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 20%;
     --input: 0 0% 15%;
-    --ring: 24 100% 50%;
+    --ring: 0 0% 95%;
 
     --radius: 0.75rem;
 
-    /* Custom design tokens */
-    --glow-orange: 0 0 40px hsl(24 100% 50% / 0.4);
-    --glow-cyan: 0 0 40px hsl(180 100% 50% / 0.3);
+    /* Semantic Glow Tokens */
+    --glow-primary: 0 0 40px hsl(0 0% 100% / 0.2);
+    --glow-secondary: 0 0 40px hsl(280 100% 65% / 0.3);
+    /* Smaller Glow Tokens */
+    --glow-primary-sm: 0 0 20px hsl(0 0% 100% / 0.15);
+    --glow-secondary-sm: 0 0 20px hsl(280 100% 65% / 0.2);
     --glass-bg: hsl(0 0% 100% / 0.05);
     --glass-border: hsl(0 0% 100% / 0.1);
   }
@@ -69,11 +72,9 @@
   }
 
   .highlight-text {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--primary)) 0%,
-      hsl(var(--foreground) / 0.85) 100%
-    );
+    background: linear-gradient(90deg,
+        hsl(var(--primary)) 0%,
+        hsl(var(--foreground) / 0.85) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -85,8 +86,7 @@
     filter: grayscale(100%);
     opacity: 0.5;
     transform: translateY(0);
-    transition: all 0.3s ease;
-    will-change: transform, filter, opacity;
+    transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
   }
 
   .group:hover .tech-icon {
@@ -97,21 +97,21 @@
 
   /* Glassmorphic card */
   .glass-card {
-    @apply bg-glass border border-glass-border backdrop-blur-xl rounded-2xl;
+    @apply bg-[#121212]/90 border border-white/5 rounded-2xl;
   }
 
   /* Glow effects */
-  .glow-orange {
-    box-shadow: var(--glow-orange);
+  .glow-primary {
+    box-shadow: var(--glow-primary);
   }
 
-  .glow-cyan {
-    box-shadow: var(--glow-cyan);
+  .glow-secondary {
+    box-shadow: var(--glow-secondary);
   }
 
   /* Text gradient */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary to-primary;
   }
 
   /* Floating animation */
@@ -137,13 +137,26 @@
     display: none;
   }
 
-  /* Glow shapes */
-  .glow-shape {
-    @apply absolute rounded-full blur-3xl opacity-20 pointer-events-none;
+  /* Cyberpunk infinite grid background */
+  .cyberpunk-grid {
+    position: absolute;
+    inset: 0;
+    background-size: 50px 50px;
+    background-image:
+      linear-gradient(to right, hsl(0 0% 100% / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(0 0% 100% / 0.04) 1px, transparent 1px);
+    transform: perspective(500px) rotateX(60deg) translateY(100px) translateZ(-200px);
+    transform-origin: bottom center;
+    mask-image: linear-gradient(to top, black 20%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 80%);
+    z-index: 0;
+    pointer-events: none;
+    animation: grid-move 5s linear infinite;
   }
 }
 
 @layer utilities {
+
   /* Custom scrollbar */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -155,34 +168,37 @@
   }
 }
 
-/* Keyframe animations */
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
   }
+
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+@keyframes grid-move {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 0 50px;
   }
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 20px hsl(24 100% 50% / 0.3);
   }
+
   50% {
     box-shadow: 0 0 40px hsl(24 100% 50% / 0.6);
-  }
-}
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
   }
 }
 
@@ -220,6 +236,39 @@ body.is-loading .noise-overlay {
   touch-action: none;
 }
 
+/* 
+  Massive performance hack for laptops with Retina displays:
+  Forces the Spline WebGL canvas to allocate a smaller framebuffer (65% width/height), 
+  skipping ~58% of all pixel shading calculations, then uses the hardware compositor 
+  to scale it back up seamlessly.
+*/
+.spline-downscale {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (-webkit-min-device-pixel-ratio: 1.5),
+(min-resolution: 144dpi) {
+  .spline-downscale {
+    width: 65% !important;
+    height: 65% !important;
+    transform: scale(1.538);
+    /* 1 / 0.65 */
+    transform-origin: top left;
+  }
+}
+
+/* Added during scroll to prevent expensive hit-testing on the 3D canvas and DOM */
+.disable-hover,
+.disable-hover * {
+  pointer-events: none !important;
+}
+
+/* Sections get paint containment for better scroll performance */
+section {
+  contain: content;
+}
+
 /*
   Interaction consistency:
   - On hover-capable devices (mouse/trackpad), ensure the Spline iframe can receive pointer movement.
@@ -231,21 +280,27 @@ body.is-loading .noise-overlay {
   }
 }
 
-@media (hover: none), (pointer: coarse) {
+@media (hover: none),
+(pointer: coarse) {
   .spline-container iframe {
     pointer-events: none;
   }
 }
 
-/* Global noise overlay */
+/*
+  Global noise overlay — uses a pre-baked static PNG tile instead of the
+  previous SVG feTurbulence filter which forced constant GPU repaints.
+  This is the single biggest perf win: same grain texture, zero runtime cost.
+*/
 .noise-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 60;
-  opacity: 0.04;
+  z-index: 0;
+  opacity: 0.05;
   background-repeat: repeat;
-  background-size: 180px 180px;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.75'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  /* mix-blend-mode: overlay; - REMOVED: Massive GPU compositing killer over 3D scenes */
+  /* Tiny 100×100 base64 PNG noise tile — generated once, never recalculated */
+  background-image: url("data:image/png;base64,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");
 }

@@ -13,13 +13,13 @@ const Footer = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, y: 40, filter: 'blur(5px)' },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
           duration: 0.8,
           ease: 'power2.out',
+          force3D: true,
           scrollTrigger: {
             trigger: footerRef.current,
             start: 'top 90%',
@@ -62,8 +62,7 @@ const Footer = () => {
       <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-primary/30 rounded-full animate-float" style={{ animationDelay: '2s' }} />
       <div className="absolute top-1/2 right-1/3 w-2 h-2 bg-secondary/30 rounded-full animate-float" style={{ animationDelay: '3s' }} />
 
-      {/* Background glow */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[150px] md:w-[600px] md:h-[200px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
 
       <div ref={contentRef} className="container mx-auto px-6">
         <div className="flex flex-col items-center text-center">

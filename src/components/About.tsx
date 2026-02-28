@@ -10,6 +10,7 @@ import {
   siPython,
   siVmware,
 } from 'simple-icons';
+import SplitType from 'split-type';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -30,17 +31,7 @@ const About = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const skillsRef = useRef<HTMLDivElement>(null);
-  const headingWordRefs = useRef<Array<HTMLSpanElement | null>>([]);
-
-  const headingWords = useMemo(
-    () => [
-      { text: 'Crafting' },
-      { text: 'Immersive' },
-      { text: 'Digital', highlight: true },
-      { text: 'Experiences', highlight: true, suffix: '.' },
-    ],
-    []
-  );
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const prefersReducedMotion =
@@ -62,16 +53,16 @@ const About = () => {
         }
       );
 
-      // Image slide in from left
+      // Image slide in from left — no filter blur, use transform+opacity only
       gsap.fromTo(
         imageRef.current,
-        { opacity: 0, x: -80, filter: 'blur(10px)' },
+        { opacity: 0, x: -80 },
         {
           opacity: 1,
           x: 0,
-          filter: 'blur(0px)',
           duration: 1,
           ease: 'power3.out',
+          force3D: true,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 70%',
@@ -79,15 +70,16 @@ const About = () => {
         }
       );
 
-      // Content fade in
+      // Content fade in — no filter blur, use opacity only
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, filter: 'blur(5px)' },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
-          filter: 'blur(0px)',
+          y: 0,
           duration: 0.8,
           ease: 'power2.out',
+          force3D: true,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 60%',
@@ -96,24 +88,30 @@ const About = () => {
       );
 
       // Heading stagger reveal (words)
-      if (prefersReducedMotion) {
-        gsap.set(headingWordRefs.current.filter(Boolean), { yPercent: 0, opacity: 1 });
-      } else {
-        gsap.fromTo(
-          headingWordRefs.current.filter(Boolean),
-          { yPercent: 110, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: 'power3.out',
-            stagger: 0.06,
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 60%',
-            },
-          }
-        );
+      if (headingRef.current) {
+        const splitTitle = new SplitType(headingRef.current, { types: 'lines,words' });
+        gsap.set(splitTitle.lines, { overflow: 'hidden' });
+
+        if (prefersReducedMotion) {
+          gsap.set(splitTitle.words, { yPercent: 0, opacity: 1 });
+        } else {
+          gsap.fromTo(
+            splitTitle.words,
+            { yPercent: 110, opacity: 0 },
+            {
+              yPercent: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: 'power3.out',
+              stagger: 0.04,
+              force3D: true,
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 60%',
+              },
+            }
+          );
+        }
       }
 
       // Skills stagger animation
@@ -145,8 +143,8 @@ const About = () => {
       className="py-24 md:py-32 relative overflow-hidden"
     >
       {/* Background elements */}
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-secondary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 right-0 w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] bg-[radial-gradient(circle_at_center,hsl(var(--secondary)/0.15)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-20">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -156,7 +154,7 @@ const About = () => {
               {/* Composite lighting: glow is CSS-generated, image stays fully transparent (no bg). */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -z-10 left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[560px] md:h-[560px] blur-[80px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.40)_0%,transparent_70%)]"
+                className="pointer-events-none absolute -z-10 left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[560px] md:h-[560px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.25)_0%,transparent_70%)]"
               />
               <div
                 aria-hidden="true"
@@ -196,25 +194,8 @@ const About = () => {
             <span className="inline-flex w-fit mx-auto lg:mx-0 items-center rounded-full border border-primary/30 px-3 py-1 text-xs uppercase tracking-widest text-primary">
               ABOUT ME
             </span>
-            <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-light mt-4 mb-6">
-              {headingWords.map((word, index) => (
-                <span key={`${word.text}-${index}`} className="inline-block overflow-hidden align-bottom">
-                  <span
-                    ref={(el) => {
-                      headingWordRefs.current[index] = el;
-                    }}
-                    className={
-                      word.highlight
-                        ? 'inline-block highlight-text font-medium'
-                        : 'inline-block'
-                    }
-                  >
-                    {word.text}
-                    {word.suffix ?? ''}
-                  </span>
-                  {index < headingWords.length - 1 ? ' ' : ''}
-                </span>
-              ))}
+            <h2 ref={headingRef} className="font-display text-3xl md:text-4xl lg:text-5xl font-light mt-4 mb-6">
+              Crafting Immersive <span className="highlight-text font-medium">Digital Experiences.</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed md:leading-loose mb-10">
               I'm an <strong className="font-semibold text-foreground">IT Specialist</strong> focused on

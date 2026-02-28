@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import SplitType from 'split-type';
 import { ExternalLink, Github } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -56,16 +57,8 @@ const projects = [
 const Projects = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const headerTextRef = useRef<HTMLHeadingElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const headingWordRefs = useRef<Array<HTMLSpanElement | null>>([]);
-
-  const headingWords = useMemo(
-    () => [
-      { text: 'Featured' },
-      { text: 'Projects', highlight: true },
-    ],
-    []
-  );
 
   useEffect(() => {
     const prefersReducedMotion =
@@ -89,24 +82,30 @@ const Projects = () => {
       );
 
       // Heading stagger reveal (words)
-      if (prefersReducedMotion) {
-        gsap.set(headingWordRefs.current.filter(Boolean), { yPercent: 0, opacity: 1 });
-      } else {
-        gsap.fromTo(
-          headingWordRefs.current.filter(Boolean),
-          { yPercent: 110, opacity: 0 },
-          {
-            yPercent: 0,
-            opacity: 1,
-            duration: 0.9,
-            ease: 'power3.out',
-            stagger: 0.07,
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-            },
-          }
-        );
+      if (headerTextRef.current) {
+        const splitTitle = new SplitType(headerTextRef.current, { types: 'lines,words' });
+        gsap.set(splitTitle.lines, { overflow: 'hidden' });
+
+        if (prefersReducedMotion) {
+          gsap.set(splitTitle.words, { yPercent: 0, opacity: 1 });
+        } else {
+          gsap.fromTo(
+            splitTitle.words,
+            { yPercent: 110, opacity: 0 },
+            {
+              yPercent: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: 'power3.out',
+              stagger: 0.07,
+              force3D: true,
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 80%',
+              },
+            }
+          );
+        }
       }
 
       // Cards stagger animation - optimized with simpler transforms
@@ -140,8 +139,8 @@ const Projects = () => {
       className="py-24 md:py-32 relative overflow-hidden"
     >
       {/* Background elements */}
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 left-0 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-[radial-gradient(circle_at_center,hsl(var(--secondary)/0.15)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="container mx-auto px-6">
         {/* Header */}
@@ -149,25 +148,9 @@ const Projects = () => {
           <span className="text-primary text-sm uppercase tracking-widest">Portfolio</span>
           <div className="relative mt-4">
             {/* Ambient spotlight */}
-            <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[220px] rounded-full bg-primary/10 opacity-[0.15] blur-[100px]" />
-            <h2 className="relative text-3xl md:text-4xl lg:text-5xl font-light">
-              {headingWords.map((word, index) => (
-                <span key={`${word.text}-${index}`} className="inline-block overflow-hidden align-bottom">
-                  <span
-                    ref={(el) => {
-                      headingWordRefs.current[index] = el;
-                    }}
-                    className={
-                      word.highlight
-                        ? 'inline-block text-primary font-medium'
-                        : 'inline-block'
-                    }
-                  >
-                    {word.text}
-                  </span>
-                  {index < headingWords.length - 1 ? ' ' : ''}
-                </span>
-              ))}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[220px] rounded-full bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] opacity-50" />
+            <h2 ref={headerTextRef} className="relative text-3xl md:text-4xl lg:text-5xl font-light">
+              Featured <span className="inline-block text-primary font-medium">Projects</span>
             </h2>
           </div>
         </div>
@@ -180,7 +163,7 @@ const Projects = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="group glass-card overflow-hidden border border-border/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-glow-orange-sm hover:border-primary/30 will-change-transform"
+              className="group overflow-hidden bg-background border border-primary/20 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_hsl(15,100%,55%,0.3)] hover:border-primary/70"
             >
               {/* Image */}
               <div className="relative h-48 overflow-hidden">
@@ -189,9 +172,9 @@ const Projects = () => {
                   alt={project.title}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105 will-change-transform"
+                  className="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
 
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
@@ -244,7 +227,7 @@ const Projects = () => {
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="text-xs px-3 py-1 rounded-full border border-border/50 bg-muted/60 text-foreground/80"
+                      className="text-xs px-3 py-1 rounded-full border border-primary/30 text-primary bg-primary/5"
                     >
                       {tech}
                     </span>

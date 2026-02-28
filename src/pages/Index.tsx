@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSplineReady, setIsSplineReady] = useState(false);
+  const [preloaderProgressDone, setPreloaderProgressDone] = useState(false);
 
   useEffect(() => {
     document.body.classList.toggle('is-loading', isLoading);
@@ -46,18 +47,23 @@ const Index = () => {
         <Preloader
           onComplete={handleLoadComplete}
           canComplete={isSplineReady}
-          maxWaitMs={20000}
+          onProgressDone={() => setPreloaderProgressDone(true)}
+          maxWaitMs={30000}
         />
       )}
 
       {/* Main content */}
       <div
-        className={`transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'
-          }`}
+        className="relative z-0"
+        style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
       >
         <Navbar />
         <main>
-          <Hero introReady={!isLoading} onSplineReady={() => setIsSplineReady(true)} />
+          <Hero
+            introReady={!isLoading}
+            allowSplineMount={preloaderProgressDone}
+            onSplineReady={() => setIsSplineReady(true)}
+          />
           <About />
           <Projects />
           <Contact />

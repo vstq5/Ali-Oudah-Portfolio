@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Github, Linkedin, Mail, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import SplitType from 'split-type';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +15,7 @@ const Contact = () => {
 
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const headerTextRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const socialsRef = useRef<HTMLDivElement>(null);
 
@@ -27,22 +29,51 @@ const Contact = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
       // Header animation
       gsap.fromTo(
         headerRef.current,
-        { opacity: 0, y: 40, filter: 'blur(5px)' },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          filter: 'blur(0px)',
           duration: 0.8,
           ease: 'power2.out',
+          force3D: true,
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
           },
         }
       );
+
+      // Headline Text Split Reveal
+      if (headerTextRef.current) {
+        const splitTitle = new SplitType(headerTextRef.current, { types: 'lines,words' });
+        gsap.set(splitTitle.lines, { overflow: 'hidden' });
+
+        if (!prefersReducedMotion) {
+          gsap.fromTo(
+            splitTitle.words,
+            { yPercent: 110, opacity: 0 },
+            {
+              yPercent: 0,
+              opacity: 1,
+              duration: 0.9,
+              ease: 'power3.out',
+              stagger: 0.07,
+              force3D: true,
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 80%',
+              },
+            }
+          );
+        }
+      }
 
       // Form inputs animation
       const formElements = formRef.current?.querySelectorAll('input, textarea, button');
@@ -152,15 +183,15 @@ const Contact = () => {
       className="py-24 md:py-32 relative overflow-hidden"
     >
       {/* Background elements */}
-      <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-secondary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] bg-[radial-gradient(circle_at_center,hsl(var(--secondary)/0.15)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="container mx-auto px-6">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div ref={headerRef} className="text-center mb-12">
             <span className="text-primary text-sm uppercase tracking-widest">Get in Touch</span>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-light mt-4">
+            <h2 ref={headerTextRef} className="text-3xl md:text-4xl lg:text-5xl font-light mt-4">
               Let's <span className="text-primary font-medium">Connect</span>
             </h2>
             <p className="text-muted-foreground mt-4">
@@ -181,7 +212,7 @@ const Contact = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="glass-card bg-glass border-glass-border focus:border-primary focus:ring-primary/20 h-12 px-4"
+                className="bg-background border border-primary/20 focus:border-primary/60 hover:border-primary/40 focus:ring-primary/20 h-12 px-4 transition-all duration-300 rounded-lg"
               />
               <Input
                 type="email"
@@ -189,7 +220,7 @@ const Contact = () => {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="glass-card bg-glass border-glass-border focus:border-primary focus:ring-primary/20 h-12 px-4"
+                className="bg-background border border-primary/20 focus:border-primary/60 hover:border-primary/40 focus:ring-primary/20 h-12 px-4 transition-all duration-300 rounded-lg"
               />
             </div>
             <Textarea
@@ -197,14 +228,13 @@ const Contact = () => {
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               required
-              rows={6}
-              className="glass-card bg-glass border-glass-border focus:border-primary focus:ring-primary/20 resize-none px-4 py-3"
+              className="bg-background border border-primary/20 focus:border-primary/60 hover:border-primary/40 focus:ring-primary/20 resize-none px-4 py-3 transition-all duration-300 rounded-xl"
             />
             <Button
               type="submit"
               size="lg"
               disabled={isSubmitting}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 hover:shadow-glow-orange h-12"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-300 hover:shadow-glow-primary h-12"
             >
               <Send className="mr-2" size={18} />
               {isSubmitting ? 'Sending…' : 'Send Message'}
@@ -222,8 +252,7 @@ const Contact = () => {
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={social.label}
-                className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-muted-foreground hover:text-primary hover:shadow-glow-orange-sm transition-all duration-300"
+                className="w-12 h-12 rounded-full border border-primary/20 bg-background flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/60 hover:shadow-[0_0_20px_hsl(15,100%,55%,0.3)] transition-all duration-300"
               >
                 <social.icon size={20} />
               </a>

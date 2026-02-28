@@ -43,11 +43,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-5 left-1/2 z-50 w-[min(1100px,calc(100%-2rem))] -translate-x-1/2 transition-all duration-300 rounded-full border backdrop-blur-xl ${
-        scrolled
-          ? 'bg-background/70 border-border/50'
-          : 'bg-background/35 border-border/30'
-      }`}
+      className={`fixed top-5 left-1/2 z-50 w-[min(1100px,calc(100%-2rem))] -translate-x-1/2 transition-all duration-300 rounded-full border ${scrolled
+        ? 'bg-black/90 border-primary/30 shadow-[0_4px_30px_hsl(15,100%,55%,0.15)]'
+        : 'bg-black/40 border-primary/10'
+        }`}
     >
       <div className="px-6 py-3">
         <div className="flex items-center justify-between">
@@ -101,9 +100,8 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden fixed inset-0 top-[88px] bg-background/95 backdrop-blur-xl transition-all duration-300 ${
-          isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
-        }`}
+        className={`md:hidden fixed inset-0 top-[88px] bg-black/98 border-t border-primary/20 transition-all duration-300 ${isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+          }`}
       >
         <div className="flex flex-col items-center justify-center h-full gap-8">
           {navLinks.map((link) => (

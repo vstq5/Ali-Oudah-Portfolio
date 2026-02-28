@@ -4,10 +4,11 @@ import gsap from 'gsap';
 interface PreloaderProps {
   onComplete: () => void;
   canComplete?: boolean;
+  onProgressDone?: () => void;
   maxWaitMs?: number;
 }
 
-const Preloader = ({ onComplete, canComplete = true, maxWaitMs = 12000 }: PreloaderProps) => {
+const Preloader = ({ onComplete, canComplete = true, onProgressDone, maxWaitMs = 15000 }: PreloaderProps) => {
   const preloaderRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
@@ -61,6 +62,10 @@ const Preloader = ({ onComplete, canComplete = true, maxWaitMs = 12000 }: Preloa
     // Hold at 100% until the app is ready to reveal (e.g., Spline loaded).
     tl.add(() => {
       progressDoneRef.current = true;
+      if (onProgressDone) {
+        // Fire asynchronously to avoid React state update warnings inside GSAP timeline
+        window.setTimeout(onProgressDone, 0);
+      }
       if (!canCompleteRef.current && !forcedCompleteRef.current) {
         tl.pause();
       }
@@ -98,8 +103,8 @@ const Preloader = ({ onComplete, canComplete = true, maxWaitMs = 12000 }: Preloa
   return (
     <div ref={preloaderRef} className="preloader">
       {/* Background glow elements */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 md:w-96 md:h-96 bg-primary/10 rounded-full blur-2xl md:blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-56 h-56 md:w-64 md:h-64 bg-secondary/10 rounded-full blur-2xl md:blur-3xl" />
+      <div className="absolute top-1/4 left-1/4 w-72 h-72 md:w-96 md:h-96 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-56 h-56 md:w-64 md:h-64 bg-[radial-gradient(circle_at_center,hsl(var(--secondary)/0.15)_0%,transparent_70%)] pointer-events-none" />
 
       {/* Logo / Name */}
       <div ref={textRef} className="text-center z-10">
