@@ -17,10 +17,11 @@ const projects = [
   },
   {
     id: 2,
-    title: 'Gaming UI Platform',
-    description: 'Next-level gaming interface with immersive 3D design',
-    image: '/assets/project-2-20260104.png',
-    tech: ['React', 'Three.js', 'Tailwind'],
+    title: 'Aafaq Education Help Center',
+    description: 'A comprehensive help center for Aafaq Education, featuring a knowledge base, searchable articles, and popular categories to assist users.',
+    image: '/assets/aafaq-help-center-v2.png',
+    tech: ['Zendesk', 'Custom UI', 'Knowledge Base'],
+    projectUrl: 'https://help.aafaqeducation.com/',
   },
   {
     id: 3,
@@ -32,10 +33,12 @@ const projects = [
   },
   {
     id: 4,
-    title: 'Gaming Website',
-    description: 'Modern gaming website with dynamic visuals',
-    image: '/assets/project-4-20260104.png',
-    tech: ['HTML5', 'CSS3', 'JS'],
+    title: 'Tribute To Redbull',
+    description: 'A high-performance 3D tribute to Oracle Red Bull Racing, featuring immersive telemetry and a dynamic RB20 car experience.',
+    image: '/assets/redbull-tribute.png',
+    tech: ['Next.js', 'Spline', 'GSAP', 'Tailwind'],
+    projectUrl: 'https://redbull-tribute.vercel.app/',
+    githubUrl: 'https://github.com/vstq5/RedBull-Tribute',
   },
   {
     id: 5,
@@ -160,7 +163,7 @@ const Projects = () => {
           ref={cardsRef}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {projects.map((project) => (
+          {projects.map((project: any) => (
             <div
               key={project.id}
               className="group overflow-hidden bg-background border border-primary/20 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_hsl(15,100%,55%,0.3)] hover:border-primary/70"
@@ -182,8 +185,16 @@ const Projects = () => {
                     size="icon"
                     variant="outline"
                     className="border-foreground/20 hover:bg-primary hover:border-primary"
+                    asChild
                   >
-                    <ExternalLink size={18} />
+                    <a
+                      href={project.projectUrl || '#'}
+                      target={project.projectUrl ? "_blank" : undefined}
+                      rel={project.projectUrl ? "noopener noreferrer" : undefined}
+                      aria-label={`${project.title} project link`}
+                    >
+                      <ExternalLink size={18} />
+                    </a>
                   </Button>
                   {project.githubUrl ? (
                     <Button
@@ -224,7 +235,7 @@ const Projects = () => {
 
                 {/* Tech stack */}
                 <div className="flex flex-wrap gap-2">
-                  {project.tech.map((tech) => (
+                  {project.tech.map((tech: string) => (
                     <span
                       key={tech}
                       className="text-xs px-3 py-1 rounded-full border border-primary/30 text-primary bg-primary/5"
