@@ -5,6 +5,16 @@ import { Button } from '@/components/ui/button';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [time, setTime] = useState<string>('00:00:00');
+
+  useEffect(() => {
+    // Clock interval
+    const timer = setInterval(() => {
+      const now = new Date();
+      setTime(now.toLocaleTimeString('en-US', { hour12: false }));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -27,10 +37,10 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'About', href: '#about' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'HOME', href: '#hero' },
+    { name: 'ABOUT', href: '#about' },
+    { name: 'PROJECTS', href: '#projects' },
+    { name: 'CONTACT', href: '#contact' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -43,67 +53,39 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-5 left-1/2 z-50 w-[min(1100px,calc(100%-2rem))] -translate-x-1/2 transition-all duration-300 rounded-full border ${scrolled
-        ? 'bg-black/90 border-primary/30 shadow-[0_4px_30px_hsl(15,100%,55%,0.15)]'
-        : 'bg-black/40 border-primary/10'
-        }`}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b ${
+        scrolled
+          ? 'bg-background/90 backdrop-blur-md border-border/60 shadow-sm'
+          : 'bg-transparent border-transparent'
+      }`}
     >
-      <div className="px-6 py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
+      <div className="w-full px-6 py-4 flex items-center justify-between">
+        
+        {/* Left: Branding & Clock */}
+        <div className="flex items-center gap-6">
           <a
             href="#hero"
             onClick={(e) => {
               e.preventDefault();
               scrollToSection('#hero');
             }}
-            className="text-2xl font-light tracking-tight"
+            className="text-lg font-mono font-medium tracking-tight hover:text-primary transition-colors"
           >
-            Ali<span className="text-primary font-medium">.</span>
+            SYS.ALI // <span className="text-primary">2.4.0</span>
           </a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection(link.href);
-                }}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors relative group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-primary transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
-            <Button
-              variant="outline"
-              className="border-foreground/20 bg-transparent hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
-              onClick={() => scrollToSection('#contact')}
-            >
-              Hire Me
-            </Button>
+          
+          <div className="hidden md:flex items-center gap-4 text-xs font-mono text-muted-foreground">
+            <span className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              STATUS: V_UPTIME_OK
+            </span>
+            <span className="opacity-50">|</span>
+            <span>T-MINUS: {time}</span>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-foreground p-2"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden fixed inset-0 top-[88px] bg-black/98 border-t border-primary/20 transition-all duration-300 ${isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
-          }`}
-      >
-        <div className="flex flex-col items-center justify-center h-full gap-8">
+        {/* Right: Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -112,16 +94,69 @@ const Navbar = () => {
                 e.preventDefault();
                 scrollToSection(link.href);
               }}
-              className="text-2xl font-light text-foreground hover:text-primary transition-colors"
+              className="text-xs font-mono text-muted-foreground hover:text-primary transition-colors relative group"
             >
-              {link.name}
+              [ {link.name} ]
+              <span className="absolute -bottom-2 left-0 w-0 h-[1px] bg-primary transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
           <Button
-            className="bg-primary text-primary-foreground hover:bg-primary/90 mt-4"
+            variant="outline"
+            size="sm"
+            className="font-mono text-xs border-primary/20 bg-transparent hover:bg-primary/10 hover:text-primary hover:border-primary transition-all rounded-none ml-4"
             onClick={() => scrollToSection('#contact')}
           >
-            Hire Me
+            EXECUTE_HIRE
+          </Button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="md:hidden text-foreground p-2 hover:text-primary transition-colors"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle menu"
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Menu (Full Screen Data Terminal) */}
+      <div
+        className={`md:hidden fixed inset-0 top-[65px] bg-background/95 backdrop-blur-lg border-t border-border transition-all duration-300 ${
+          isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+        }`}
+      >
+        <div className="flex flex-col items-start p-8 h-full gap-8">
+          <div className="text-xs font-mono text-muted-foreground mb-4">
+            <span className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              SYSTEM.STATUS: ONLINE
+            </span>
+            <span>LOCAL.TIME: {time}</span>
+          </div>
+          
+          <div className="w-full flex justify-end">
+             {navLinks.map((link, i) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(link.href);
+                }}
+                className="text-2xl font-mono text-foreground hover:text-primary transition-colors w-full text-right block py-2 border-b border-border/20"
+                style={{ transitionDelay: `${i * 50}ms` }}
+              >
+                [ {link.name} ]
+              </a>
+            ))}
+          </div>
+
+          <Button
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 mt-8 rounded-none font-mono tracking-widest"
+            onClick={() => scrollToSection('#contact')}
+          >
+            EXECUTE_HIRE
           </Button>
         </div>
       </div>

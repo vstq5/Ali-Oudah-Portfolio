@@ -82,15 +82,15 @@ export default function SpotifyNowPlaying() {
   const isPlaying = Boolean(data && 'isPlaying' in data && data.isPlaying);
 
   return (
-    <div className="inline-flex items-center gap-3 rounded-full border border-foreground/10 bg-background/80 px-4 py-2">
-      <span className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-        <SpotifyMark />
-        Listening
-      </span>
+    <div className="flex items-center justify-between gap-4 py-2 border-b border-foreground/10 text-xs font-mono w-full">
+      <div className="flex items-center gap-3">
+        <span className="text-primary font-medium tracking-widest">[SFTY]</span>
+        <span className="text-muted-foreground uppercase tracking-widest min-w-[70px]">
+          {isPlaying ? 'PLAYING' : 'IDLE'}
+        </span>
+      </div>
 
-      <div className="h-4 w-px bg-foreground/10" />
-
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1 text-right">
         {isPlaying ? (
           <a
             href={(data as Extract<NowPlayingResponse, { isPlaying: true }>).songUrl}
@@ -99,25 +99,16 @@ export default function SpotifyNowPlaying() {
             className="group block min-w-0"
             title="Open in Spotify"
           >
-            <div className="flex items-center gap-2 min-w-0">
-              {(data as Extract<NowPlayingResponse, { isPlaying: true }>).albumImageUrl ? (
-                <img
-                  src={(data as Extract<NowPlayingResponse, { isPlaying: true }>).albumImageUrl}
-                  alt=""
-                  className="h-6 w-6 shrink-0 rounded-full border border-foreground/10"
-                  loading="lazy"
-                  decoding="async"
-                />
-              ) : null}
-              <span className="truncate text-sm text-foreground/90 group-hover:text-primary transition-colors">
+            <div className="flex items-center justify-end gap-2 min-w-0">
+              <span className="truncate text-foreground/80 group-hover:text-primary transition-colors">
                 {(data as Extract<NowPlayingResponse, { isPlaying: true }>).title}
               </span>
-              <span className="shrink-0 text-xs text-muted-foreground">•</span>
-              <span className="truncate text-xs text-muted-foreground">{subtitle}</span>
+              <span className="shrink-0 text-muted-foreground/30">//</span>
+              <span className="truncate text-muted-foreground">{subtitle}</span>
             </div>
           </a>
         ) : (
-          <div className="text-xs text-muted-foreground">
+          <div className="text-muted-foreground">
             {error ? error : subtitle}
           </div>
         )}

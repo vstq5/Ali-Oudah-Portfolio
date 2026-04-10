@@ -13,7 +13,7 @@ const Footer = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         contentRef.current,
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
@@ -22,7 +22,7 @@ const Footer = () => {
           force3D: true,
           scrollTrigger: {
             trigger: footerRef.current,
-            start: 'top 90%',
+            start: 'top 95%',
           },
         }
       );
@@ -30,19 +30,6 @@ const Footer = () => {
 
     return () => ctx.revert();
   }, []);
-
-  const navLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'About', href: '#about' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Contact', href: '#contact' },
-  ];
-
-  const socials = [
-    { icon: Github, href: 'https://github.com/vstq5', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://www.linkedin.com/in/ali-oudah', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:alialoudah5@gmail.com', label: 'Email' },
-  ];
 
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
@@ -54,65 +41,86 @@ const Footer = () => {
   return (
     <footer
       ref={footerRef}
-      className="relative py-16 border-t border-border overflow-hidden"
+      className="relative border-t border-border/40 bg-background/80 backdrop-blur-md overflow-hidden"
     >
-      {/* Floating particles */}
-      <div className="absolute top-0 left-1/4 w-2 h-2 bg-primary/40 rounded-full animate-float" />
-      <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-secondary/40 rounded-full animate-float" style={{ animationDelay: '1s' }} />
-      <div className="absolute bottom-1/4 left-1/3 w-1 h-1 bg-primary/30 rounded-full animate-float" style={{ animationDelay: '2s' }} />
-      <div className="absolute top-1/2 right-1/3 w-2 h-2 bg-secondary/30 rounded-full animate-float" style={{ animationDelay: '3s' }} />
+      <div ref={contentRef} className="container mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 text-sm font-mono text-muted-foreground">
+          
+          {/* Column 1: Core ID */}
+          <div className="flex flex-col gap-4">
+            <a
+              href="#hero"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('#hero');
+              }}
+              className="text-2xl font-light tracking-tight text-foreground hover:text-primary transition-colors flex items-center gap-2"
+            >
+              SYS.ALI <span className="text-primary text-sm bg-primary/10 px-2 py-0.5 ml-2">V2.4</span>
+            </a>
+            <p className="opacity-70 mt-4 leading-relaxed max-w-xs">
+              Designing robust digital architecture and high-performance interfaces.
+            </p>
+          </div>
 
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[150px] md:w-[600px] md:h-[200px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
+          {/* Column 2: Telemetry */}
+          <div className="flex flex-col gap-3">
+            <span className="text-primary tracking-widest text-xs mb-2">TELEMETRY</span>
+            <div className="flex items-center gap-2">
+              <span className="opacity-50 w-24">LOCATION</span>
+              <span>29.3759° N, 47.9774° E</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="opacity-50 w-24">VERSION</span>
+              <span>2.4.0-STABLE</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="opacity-50 w-24">PROTOCOL</span>
+              <span>HTTPS_SECURE</span>
+            </div>
+          </div>
 
-      <div ref={contentRef} className="container mx-auto px-6">
-        <div className="flex flex-col items-center text-center">
-          {/* Logo */}
-          <a
-            href="#hero"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection('#hero');
-            }}
-            className="text-3xl font-light tracking-tight mb-6"
-          >
-            Ali<span className="text-primary font-medium">.</span>
-          </a>
-
-          {/* Navigation */}
-          <nav className="flex flex-wrap items-center justify-center gap-6 mb-8">
-            {navLinks.map((link) => (
+          {/* Column 3: Navigation */}
+          <div className="flex flex-col gap-3">
+            <span className="text-primary tracking-widest text-xs mb-2">DIRECTORY</span>
+            {['#hero', '#about', '#projects', '#contact'].map((href) => (
               <a
-                key={link.name}
-                href={link.href}
+                key={href}
+                href={href}
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToSection(link.href);
+                  scrollToSection(href);
                 }}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="hover:text-primary transition-colors inline-block w-fit"
               >
-                {link.name}
-              </a>
-            ))}
-          </nav>
-
-          {/* Social icons */}
-          <div className="flex items-center gap-4 mb-8">
-            {socials.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-all duration-300"
-              >
-                <social.icon size={18} />
+                &gt; {href.replace('#', '').toUpperCase()}
               </a>
             ))}
           </div>
 
-          {/* Copyright */}
-          <p className="text-sm text-muted-foreground">© 2026 Ali Oudah</p>
+          {/* Column 4: Links */}
+          <div className="flex flex-col gap-3">
+            <span className="text-primary tracking-widest text-xs mb-2">EXTERNAL_LINKS</span>
+            <a href="https://github.com/vstq5" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
+              <Github size={14} /> GITHUB
+            </a>
+            <a href="https://www.linkedin.com/in/ali-oudah" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
+              <Linkedin size={14} /> LINKEDIN
+            </a>
+            <a href="mailto:alialoudah5@gmail.com" className="hover:text-primary transition-colors flex items-center gap-2">
+              <Mail size={14} /> EMAIL
+            </a>
+          </div>
+
+        </div>
+
+        {/* Bottom Banner */}
+        <div className="border-t border-border/40 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs text-muted-foreground/60">
+          <p>© {new Date().getFullYear()} ALI ALOSIMI. ALL SYSTEMS OPERATIONAL.</p>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
+            SECURE CONNECTION ESTABLISHED
+          </div>
         </div>
       </div>
     </footer>

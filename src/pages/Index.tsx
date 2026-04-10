@@ -6,6 +6,7 @@ import About from '@/components/About';
 import Projects from '@/components/Projects';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import GlobalBackground from '@/components/GlobalBackground';
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,13 +43,13 @@ const Index = () => {
 
   return (
     <>
+      <GlobalBackground />
       {/* Preloader */}
       {isLoading && (
         <Preloader
           onComplete={handleLoadComplete}
-          canComplete={isSplineReady}
+          canComplete={true}
           onProgressDone={() => setPreloaderProgressDone(true)}
-          maxWaitMs={30000}
         />
       )}
 
@@ -61,8 +62,6 @@ const Index = () => {
         <main>
           <Hero
             introReady={!isLoading}
-            allowSplineMount={preloaderProgressDone}
-            onSplineReady={() => setIsSplineReady(true)}
           />
           <About />
           <Projects />

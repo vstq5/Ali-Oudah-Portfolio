@@ -36,14 +36,15 @@ export default function LiveStatus({
     <div
       className={
         className ??
-        "glass-card inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs md:text-sm"
+        "flex items-center justify-between gap-4 py-2 border-b border-foreground/10 text-xs font-mono"
       }
       aria-live="polite"
     >
-      <span aria-hidden="true">📍</span>
-      <span className="text-foreground/90">Based in {city}</span>
-      <span className="text-muted-foreground">•</span>
-      <span className="font-mono text-muted-foreground">{formatter.format(now)}</span>
+      <div className="flex items-center gap-3">
+        <span className="text-primary font-medium tracking-widest">[LOC]</span>
+        <span className="text-muted-foreground uppercase tracking-widest">{city}</span>
+      </div>
+      <span className="text-foreground/80">{formatter.format(now)}</span>
     </div>
   );
 }

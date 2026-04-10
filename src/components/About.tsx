@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Button } from '@/components/ui/button';
@@ -28,8 +28,8 @@ const About = () => {
   const resumePdf = '/assets/Ali_Oudah_Resum.pdf';
 
   const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const narrativeRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const skillsRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -53,10 +53,10 @@ const About = () => {
         }
       );
 
-      // Image slide in from left — no filter blur, use transform+opacity only
+      // Identity Card slide/fade in
       gsap.fromTo(
-        imageRef.current,
-        { opacity: 0, x: -80 },
+        cardRef.current,
+        { opacity: 0, x: 40 },
         {
           opacity: 1,
           x: 0,
@@ -70,9 +70,9 @@ const About = () => {
         }
       );
 
-      // Content fade in — no filter blur, use opacity only
+      // Narrative slide/fade in
       gsap.fromTo(
-        contentRef.current,
+        narrativeRef.current,
         { opacity: 0, y: 30 },
         {
           opacity: 1,
@@ -117,14 +117,13 @@ const About = () => {
       // Skills stagger animation
       gsap.fromTo(
         skillsRef.current?.children || [],
-        { opacity: 0, y: 20, scale: 0.9 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
           duration: 0.5,
           stagger: 0.1,
-          ease: 'back.out(1.7)',
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: skillsRef.current,
             start: 'top 80%',
@@ -143,109 +142,132 @@ const About = () => {
       className="py-24 md:py-32 relative overflow-hidden"
     >
       {/* Background elements */}
-      <div className="absolute top-1/4 right-0 w-[300px] h-[300px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.15)_0%,transparent_70%)] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] bg-[radial-gradient(circle_at_center,hsl(var(--secondary)/0.15)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,theme(colors.primary.DEFAULT/0.05)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Image */}
-          <div ref={imageRef} className="relative mx-auto lg:mx-0 w-full max-w-[400px] md:max-w-[420px]">
-            <div className="relative w-full flex items-end justify-center">
-              {/* Composite lighting: glow is CSS-generated, image stays fully transparent (no bg). */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -z-10 left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[560px] md:h-[560px] bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.25)_0%,transparent_70%)]"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute -z-10 left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] md:w-[440px] md:h-[440px] rounded-full border border-primary/20 opacity-30"
-              />
-              <img
-                src={profileImage}
-                alt="Ali Oudah - IT Specialist"
-                className="relative z-10 w-full h-auto select-none pointer-events-none origin-bottom scale-[1.06]"
-                style={{
-                  WebkitMaskImage:
-                    'linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)',
-                  maskImage:
-                    'linear-gradient(to bottom, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)',
-                  WebkitMaskRepeat: 'no-repeat',
-                  maskRepeat: 'no-repeat',
-                  WebkitMaskSize: '100% 100%',
-                  maskSize: '100% 100%',
-                  filter: 'sepia(0.2) brightness(0.9)',
-                }}
-              />
-            </div>
-
-            <div className="mt-6 flex justify-center lg:justify-start">
-              <div className="flex flex-col items-center lg:items-start gap-3">
-                <LiveStatus city={CITY} timeZone={TIMEZONE} />
-                <SpotifyNowPlaying />
-              </div>
-            </div>
-          </div>
-
-          {/* Content */}
+      <div className="container mx-auto px-6 relative z-20 max-w-6xl">
+        <div className="grid lg:grid-cols-[1fr_400px] gap-12 lg:gap-20 items-stretch">
+          
+          {/* Narrative Block (Left) */}
           <div
-            ref={contentRef}
-            className="text-center lg:text-left flex flex-col justify-center h-full"
+            ref={narrativeRef}
+            className="flex flex-col justify-center"
           >
-            <span className="inline-flex w-fit mx-auto lg:mx-0 items-center rounded-full border border-primary/30 px-3 py-1 text-xs uppercase tracking-widest text-primary">
-              ABOUT ME
-            </span>
-            <h2 ref={headingRef} className="font-display text-3xl md:text-4xl lg:text-5xl font-light mt-4 mb-6">
-              Crafting Immersive <span className="highlight-text font-medium">Digital Experiences.</span>
+            <div className="inline-flex w-fit items-center border border-[#28282c] bg-[#0a0b0c] px-3 py-1 text-xs font-mono tracking-widest text-primary mb-6">
+              ID-01 // NARRATIVE
+            </div>
+            
+            <h2 ref={headingRef} className="font-display text-4xl md:text-5xl lg:text-5xl font-extralight tracking-tight mt-2 mb-8 text-foreground/90 leading-tight">
+              Crafting Immersive <br className="hidden md:block"/>
+              <span className="text-foreground font-normal">Digital Experiences.</span>
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed md:leading-loose mb-10">
-              I'm an <strong className="font-semibold text-foreground">IT Specialist</strong> focused on
-              <strong className="font-semibold text-foreground"> troubleshooting</strong>,
-              <strong className="font-semibold text-foreground"> system administration</strong>, and
-              <strong className="font-semibold text-foreground"> user support</strong>. I enjoy keeping
+            
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed md:leading-loose mb-10 max-w-2xl">
+              I'm an <strong className="font-medium text-foreground">IT Specialist</strong> focused on
+              <strong className="font-medium text-foreground"> troubleshooting</strong>,
+              <strong className="font-medium text-foreground"> system administration</strong>, and
+              <strong className="font-medium text-foreground"> user support</strong>. I enjoy keeping
               environments stable and secure, and I build simple automation and tools that make day-to-day work faster.
             </p>
 
             {/* CTA */}
-            <div className="flex justify-center lg:justify-start mb-2">
+            <div className="flex justify-start mb-14">
               <Button
                 variant="outline"
-                className="bg-transparent border-foreground/30 text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+                className="bg-[#0a0b0c] border-[#28282c] text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-colors rounded-none px-8 font-mono tracking-wide text-xs"
                 asChild
               >
                 <a href={resumePdf} download="Ali_Oudah_Resume.pdf">
-                  Download CV
+                  [ DOWNLOAD_CV ]
                 </a>
               </Button>
             </div>
 
-            {/* Skills grid */}
-            <div ref={skillsRef} className="flex flex-wrap justify-center lg:justify-start gap-6 mt-8">
-              {skills.map((skill) => (
-                <div
-                  key={skill.name}
-                  className="group flex flex-col items-center gap-2 cursor-default"
-                  style={{ ['--tech-color' as unknown as keyof CSSProperties]: `#${skill.icon.hex}` } as CSSProperties}
-                >
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    viewBox="0 0 24 24"
-                    className="tech-icon h-7 w-7"
+            {/* Capability Matrix */}
+            <div>
+              <h3 className="text-xs font-mono tracking-widest text-muted-foreground mb-4 uppercase">Capability Matrix</h3>
+              <div ref={skillsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {skills.map((skill) => (
+                  <div
+                    key={skill.name}
+                    className="group flex flex-col items-center justify-center gap-3 p-6 bg-[#0a0b0c]/50 border border-[#28282c] hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 relative overflow-hidden"
+                    style={{ ['--tech-color' as unknown as keyof CSSProperties]: `#${skill.icon.hex}` } as CSSProperties}
                   >
-                    <path d={skill.icon.path} fill={`#${skill.icon.hex}`} />
-                  </svg>
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground/80 transition-colors duration-300 group-hover:text-[color:var(--tech-color)]">
-                    {skill.name}
-                  </span>
-                </div>
-              ))}
+                    {/* Hover Glow */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tech-color)_0%,transparent_70%)] opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
+                    
+                    <svg
+                      aria-hidden="true"
+                      focusable="false"
+                      viewBox="0 0 24 24"
+                      className="tech-icon h-8 w-8 text-muted-foreground/30 group-hover:text-[color:var(--tech-color)] transition-colors duration-300"
+                    >
+                      <path d={skill.icon.path} fill="currentColor" />
+                    </svg>
+                    <span className="text-xs font-mono tracking-widest text-muted-foreground/50 transition-colors duration-300 group-hover:text-foreground/90">
+                      {skill.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
+
+          {/* Identity Card (Right) */}
+          <div ref={cardRef} className="relative w-full h-full min-h-[500px]">
+            <div className="absolute inset-0 bg-[#0a0b0c] border border-[#28282c] rounded-xl flex flex-col overflow-hidden shadow-2xl">
+              
+              {/* Card Header */}
+              <div className="flex justify-between items-center px-4 py-3 border-b border-[#28282c] bg-white/[0.02]">
+                <div className="flex gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                </div>
+                <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">v2.4.0-DEPLOYED</span>
+              </div>
+
+              {/* Profile Image with Scan-lines */}
+              <div className="relative flex-1 bg-black/50 overflow-hidden flex items-end justify-center min-h-[300px]">
+                {/* Background ambient glow inside card */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,theme(colors.primary.DEFAULT/0.15)_0%,transparent_60%)]" />
+                
+                {/* CSS Scan-lines overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-30 z-20" 
+                  style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} 
+                />
+
+                <img
+                  src={profileImage}
+                  alt="Ali Oudah - IT Specialist"
+                  className="relative z-10 w-[85%] h-auto object-contain select-none pointer-events-none origin-bottom scale-105 filter grayscale-[20%] contrast-125"
+                  style={{
+                    WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)',
+                    maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)',
+                  }}
+                />
+                
+                {/* Crosshair accents */}
+                <div className="absolute top-8 left-8 w-4 h-4 border-t border-l border-primary/50 opacity-50" />
+                <div className="absolute top-8 right-8 w-4 h-4 border-t border-r border-primary/50 opacity-50" />
+                <div className="absolute bottom-8 left-8 w-4 h-4 border-b border-l border-primary/50 opacity-50" />
+                <div className="absolute bottom-8 right-8 w-4 h-4 border-b border-r border-primary/50 opacity-50" />
+              </div>
+
+              {/* System Logs (Footer) */}
+              <div className="p-4 border-t border-[#28282c] bg-white/[0.01] flex flex-col gap-2">
+                 <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground/50 font-mono mb-2">System Telemetry</h4>
+                 <LiveStatus city={CITY} timeZone={TIMEZONE} />
+                 <SpotifyNowPlaying />
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </div>
 
-      {/* Bottom fade into the next section (Projects) */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[150px] bg-gradient-to-b from-transparent to-background z-10" />
     </section>
   );
 };

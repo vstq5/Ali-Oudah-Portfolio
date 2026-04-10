@@ -7,45 +7,45 @@
 
 @layer base {
   :root {
-    /* Core colors - True Black Cyberpunk Theme */
-    --background: 0 0% 0%;
+    /* Core colors - Linear-inspired Precision Theme */
+    --background: 210 11% 4%; /* #08090a */
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 0%;
+    --card: 210 11% 4%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 0%;
+    --popover: 210 11% 4%;
     --popover-foreground: 0 0% 100%;
 
     /* Liquid Silver/White - Primary text and highlights */
     --primary: 0 0% 95%;
     --primary-foreground: 0 0% 10%;
 
-    /* Deep Electric Purple - Secondary glow matching the Spline floor light */
-    --secondary: 280 100% 65%;
+    /* Stripe Purple - Secondary glow and accents */
+    --secondary: 248 98% 61%; /* #533afd */
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
+    --muted: 210 11% 10%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 285 100% 60%;
+    --accent: 248 98% 61%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 20%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 95%;
+    --border: 240 5% 16%; /* #28282c */
+    --input: 240 5% 16%;
+    --ring: 248 98% 61%;
 
     --radius: 0.75rem;
 
     /* Semantic Glow Tokens */
-    --glow-primary: 0 0 40px hsl(0 0% 100% / 0.2);
-    --glow-secondary: 0 0 40px hsl(280 100% 65% / 0.3);
+    --glow-primary: 0 0 40px hsl(0 0% 100% / 0.1);
+    --glow-secondary: 0 0 40px hsl(248 98% 61% / 0.2);
     /* Smaller Glow Tokens */
-    --glow-primary-sm: 0 0 20px hsl(0 0% 100% / 0.15);
-    --glow-secondary-sm: 0 0 20px hsl(280 100% 65% / 0.2);
+    --glow-primary-sm: 0 0 20px hsl(0 0% 100% / 0.05);
+    --glow-secondary-sm: 0 0 20px hsl(248 98% 61% / 0.15);
     --glass-bg: hsl(0 0% 100% / 0.05);
     --glass-border: hsl(0 0% 100% / 0.1);
   }
@@ -137,22 +137,7 @@
     display: none;
   }
 
-  /* Cyberpunk infinite grid background */
-  .cyberpunk-grid {
-    position: absolute;
-    inset: 0;
-    background-size: 50px 50px;
-    background-image:
-      linear-gradient(to right, hsl(0 0% 100% / 0.04) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(0 0% 100% / 0.04) 1px, transparent 1px);
-    transform: perspective(500px) rotateX(60deg) translateY(100px) translateZ(-200px);
-    transform-origin: bottom center;
-    mask-image: linear-gradient(to top, black 20%, transparent 80%);
-    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 80%);
-    z-index: 0;
-    pointer-events: none;
-    animation: grid-move 5s linear infinite;
-  }
+
 }
 
 @layer utilities {
@@ -180,15 +165,6 @@
   }
 }
 
-@keyframes grid-move {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 0 50px;
-  }
-}
 
 @keyframes pulse-glow {
 
@@ -202,63 +178,7 @@
   }
 }
 
-/* Preloader styles */
-.preloader {
-  @apply fixed inset-0 z-[100] flex flex-col items-center justify-center;
-  background: hsl(0 0% 7%);
-  will-change: opacity, transform;
-}
-
-.progress-bar-container {
-  @apply w-64 h-1 bg-muted rounded-full overflow-hidden mt-8;
-}
-
-.progress-bar {
-  @apply h-full bg-primary rounded-full;
-  width: 100%;
-  transform: scaleX(0);
-  transform-origin: left center;
-  will-change: transform;
-}
-
-body.is-loading .noise-overlay {
-  opacity: 0;
-}
-
-/* Spline container */
-.spline-container {
-  @apply absolute inset-0 w-full h-full;
-  contain: layout paint;
-}
-
-.spline-container iframe {
-  @apply w-full h-full border-none;
-  touch-action: none;
-}
-
-/* 
-  Massive performance hack for laptops with Retina displays:
-  Forces the Spline WebGL canvas to allocate a smaller framebuffer (65% width/height), 
-  skipping ~58% of all pixel shading calculations, then uses the hardware compositor 
-  to scale it back up seamlessly.
-*/
-.spline-downscale {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.5),
-(min-resolution: 144dpi) {
-  .spline-downscale {
-    width: 65% !important;
-    height: 65% !important;
-    transform: scale(1.538);
-    /* 1 / 0.65 */
-    transform-origin: top left;
-  }
-}
-
-/* Added during scroll to prevent expensive hit-testing on the 3D canvas and DOM */
+/* Added during scroll to prevent expensive hit-testing on the DOM */
 .disable-hover,
 .disable-hover * {
   pointer-events: none !important;
