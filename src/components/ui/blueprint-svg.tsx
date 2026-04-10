@@ -3,8 +3,10 @@ import gsap from "gsap";
 
 export const BlueprintSvg = ({
   className,
+  isMobile = false,
 }: {
   className?: string;
+  isMobile?: boolean;
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -12,31 +14,37 @@ export const BlueprintSvg = ({
     if (!svgRef.current) return;
 
     const ctx = gsap.context(() => {
-      const paths = gsap.utils.toArray<SVGPathElement>("path, circle, rect, polyline, line");
+      // Only do the heavy path animations on desktop
+      if (!isMobile) {
+        const paths = gsap.utils.toArray<SVGPathElement>("path, circle, rect, polyline, line");
 
-      paths.forEach((path) => {
-        const length = (path as SVGGeometryElement).getTotalLength?.() || 1000;
-        gsap.set(path, {
-          strokeDasharray: length,
-          strokeDashoffset: length,
-          opacity: 1,
-        });
+        paths.forEach((path) => {
+          const length = (path as SVGGeometryElement).getTotalLength?.() || 1000;
+          gsap.set(path, {
+            strokeDasharray: length,
+            strokeDashoffset: length,
+            opacity: 1,
+          });
 
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          duration: Math.random() * 2 + 2, // 2-4 seconds
-          ease: "power2.inOut",
-          delay: Math.random() * 0.5,
+          gsap.to(path, {
+            strokeDashoffset: 0,
+            duration: Math.random() * 2 + 2, // 2-4 seconds
+            ease: "power2.inOut",
+            delay: Math.random() * 0.5,
+          });
         });
-      });
+      } else {
+        // On mobile, just make sure paths are visible immediately without calculating lengths
+        gsap.set("path, circle, rect, polyline, line", { opacity: 1, strokeDasharray: "none" });
+      }
       
-      // Endless slow rotation for internal rings
+      // Endless slow rotation for internal rings - keep this as it's simple
       const rings = gsap.utils.toArray<SVGElement>(".rotate-ring");
       rings.forEach((ring, i) => {
         gsap.to(ring, {
           rotation: 360,
           transformOrigin: "50% 50%",
-          duration: 20 + i * 10,
+          duration: 25 + i * 15, // Slower on mobile
           repeat: -1,
           ease: "none",
         });
@@ -44,7 +52,7 @@ export const BlueprintSvg = ({
     }, svgRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   return (
     <svg

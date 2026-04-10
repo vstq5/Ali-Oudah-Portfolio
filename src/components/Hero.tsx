@@ -5,12 +5,14 @@ import { ArrowDown } from 'lucide-react';
 import { BlueprintSvg } from '@/components/ui/blueprint-svg';
 import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
 import { Meteors } from '@/components/ui/meteors';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface HeroProps {
   introReady?: boolean;
 }
 
 const Hero = ({ introReady = true }: HeroProps) => {
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const lineRefs = useRef<Array<HTMLElement | null>>([]);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -78,20 +80,19 @@ const Hero = ({ introReady = true }: HeroProps) => {
       {/* Background layer */}
       <div className="absolute inset-0 z-0">
         <AnimatedGridPattern
-          numSquares={30}
+          numSquares={isMobile ? 12 : 30}
           maxOpacity={0.1}
-          duration={3}
-          repeatDelay={1}
+          duration={isMobile ? 5 : 3}
           className="text-primary/20 absolute inset-0 h-full w-full opacity-50"
         />
         <div className="absolute inset-0">
-          <Meteors number={15} />
+          <Meteors number={isMobile ? 6 : 15} />
         </div>
       </div>
 
       {/* Blueprint Engine layer: Technical drawing illustration */}
-      <div className="absolute right-[-20%] md:right-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-30 pointer-events-none mix-blend-screen z-0">
-        <BlueprintSvg />
+      <div className={`absolute right-[-20%] md:right-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-30 pointer-events-none z-0 ${isMobile ? '' : 'mix-blend-screen'}`}>
+        <BlueprintSvg isMobile={isMobile} />
       </div>
 
       {/* Content — Left aligned on desktop for split layout */}
