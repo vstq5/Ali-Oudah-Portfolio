@@ -48,6 +48,15 @@
     --glow-secondary-sm: 0 0 20px hsl(248 98% 61% / 0.15);
     --glass-bg: hsl(0 0% 100% / 0.05);
     --glass-border: hsl(0 0% 100% / 0.1);
+
+    /* Hero warm palette — derived from the cozy-study render (scoped to hero + nav HUD).
+       HSL channels so Tailwind opacity modifiers work (e.g. bg-terracotta/10). */
+    --terracotta: 15 74% 56%;       /* #E2643C burnt orange */
+    --terracotta-deep: 14 71% 42%;  /* #B8431F rust (hover) */
+    --mint: 157 70% 63%;            /* #5FE3B0 CRT screen echo */
+    --cream: 39 51% 91%;            /* #F4ECDD headings / warm off-white */
+    --sand: 36 29% 78%;             /* #D8CBB8 body / subtext */
+    --study: 21 12% 15%;            /* #2B2522 scene-darkest / page base */
   }
 }
 
@@ -176,6 +185,46 @@
   50% {
     box-shadow: 0 0 40px hsl(24 100% 50% / 0.6);
   }
+}
+
+/* Hero: slow ambient drift of the engineered dot-grid + warm glow */
+@keyframes gridDrift {
+  from { background-position: 0 0; }
+  to   { background-position: 28px 28px; }
+}
+@keyframes glowFloat {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(3%, -2.5%, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grid-drift { animation: none !important; }
+  .glow-float { animation: none !important; }
+}
+
+/* Gentle bob for the hero scroll-down chevron */
+@keyframes heroChevron {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+
+/* Slow breathing warm glow behind the CRT mascot */
+@keyframes heroGlow {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.85; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-chevron { animation: none !important; }
+  .hero-glow { animation: none !important; }
+}
+
+/* Footer: slow seamless name marquee */
+@keyframes footerMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-marquee { animation: none !important; }
 }
 
 /* Added during scroll to prevent expensive hit-testing on the DOM */

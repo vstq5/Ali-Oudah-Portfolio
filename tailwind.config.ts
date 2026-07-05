@@ -53,6 +53,15 @@ export default {
         },
         glass: "hsl(0 0% 100% / 0.05)",
         "glass-border": "hsl(0 0% 100% / 0.1)",
+        // Hero warm palette (cozy study) — used by Hero + nav HUD
+        terracotta: {
+          DEFAULT: "hsl(var(--terracotta))",
+          deep: "hsl(var(--terracotta-deep))",
+        },
+        mint: "hsl(var(--mint))",
+        cream: "hsl(var(--cream))",
+        sand: "hsl(var(--sand))",
+        study: "hsl(var(--study))",
       },
       borderRadius: {
         lg: "var(--radius)",

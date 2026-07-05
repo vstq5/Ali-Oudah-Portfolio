@@ -1,167 +1,194 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Button } from '@/components/ui/button';
-import { ArrowDown } from 'lucide-react';
-import { BlueprintSvg } from '@/components/ui/blueprint-svg';
-import { AnimatedGridPattern } from '@/components/ui/animated-grid-pattern';
-import { Meteors } from '@/components/ui/meteors';
-import { useIsMobile } from '@/hooks/use-mobile';
 
-interface HeroProps {
-  introReady?: boolean;
-}
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
-const Hero = ({ introReady = true }: HeroProps) => {
-  const isMobile = useIsMobile();
+const PORTRAIT = '/assets/portrait-ali.jpg';
+
+/**
+ * Editorial hero — near-black canvas, low-key portrait dissolving into the
+ * background, quiet factual meta row. Type carries the message; motion is a
+ * single masked line reveal, then stillness.
+ */
+const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const portraitRef = useRef<HTMLImageElement>(null);
   const lineRefs = useRef<Array<HTMLElement | null>>([]);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const [reduce] = useState(prefersReducedMotion);
 
   useEffect(() => {
-    if (!introReady) return;
-    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    if (prefersReducedMotion) return;
-
     const ctx = gsap.context(() => {
-      if (!subtitleRef.current) return;
+      const lines = lineRefs.current.filter(Boolean);
+      const rest = [subtitleRef.current, ctaRef.current].filter(Boolean);
 
-      const tl = gsap.timeline();
+      // reduced motion still needs the opacity-0 elements revealed
+      if (reduce) {
+        gsap.set([portraitRef.current, ...lines, ...rest], { opacity: 1 });
+        return;
+      }
 
-      // Ensure elements are un-hidden before animating
-      gsap.set([...lineRefs.current.filter(Boolean), subtitleRef.current, ctaRef.current], { opacity: 1 });
-
+      const tl = gsap.timeline({ delay: 0.15 });
       tl.fromTo(
-        lineRefs.current.filter(Boolean),
-        { yPercent: 120, rotateX: -20, opacity: 0 },
-        {
-          yPercent: 0,
-          rotateX: 0,
-          opacity: 1,
-          stagger: 0.15,
-          duration: 1.2,
-          ease: 'power4.out',
-          force3D: true,
-        }
+        portraitRef.current,
+        { opacity: 0, scale: 1.03 },
+        { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out', force3D: true },
+        0
       )
         .fromTo(
+          lines,
+          { yPercent: 115, opacity: 0 },
+          { yPercent: 0, opacity: 1, stagger: 0.11, duration: 1.0, ease: 'power4.out', force3D: true },
+          0.2
+        )
+        .fromTo(
           subtitleRef.current,
-          { y: 30, opacity: 0 },
-          { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out', force3D: true },
-          '-=0.7'
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.75, ease: 'power2.out' },
+          '-=0.55'
         )
         .fromTo(
           ctaRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', force3D: true },
-          '-=0.5'
+          { y: 14, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' },
+          '-=0.45'
         );
     }, sectionRef);
+    return () => ctx.revert();
+  }, [reduce]);
 
-    return () => {
-      // Revert GSAP animations
-      ctx.revert();
+  // gentle magnetic pull on the primary CTA, pointer-fine only
+  useEffect(() => {
+    if (reduce) return;
+    const el = ctaRef.current?.querySelector<HTMLElement>('[data-magnetic]');
+    if (!el || !window.matchMedia?.('(pointer: fine)')?.matches) return;
+
+    const xTo = gsap.quickTo(el, 'x', { duration: 0.45, ease: 'power3.out' });
+    const yTo = gsap.quickTo(el, 'y', { duration: 0.45, ease: 'power3.out' });
+    const onMove = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      xTo((e.clientX - (r.left + r.width / 2)) * 0.16);
+      yTo((e.clientY - (r.top + r.height / 2)) * 0.16);
     };
-  }, [introReady]);
+    const onLeave = () => {
+      xTo(0);
+      yTo(0);
+    };
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerleave', onLeave);
+    return () => {
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerleave', onLeave);
+    };
+  }, [reduce]);
 
-  const scrollToProjects = () => {
-    const element = document.querySelector('#projects');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const scrollTo = (sel: string) => {
+    document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const headlineLines: Array<{ text: string; className: string }> = [
+    { text: 'Ali Oudah.', className: 'text-cream' },
+    { text: 'Reliable systems,', className: 'text-sand/60' },
+    { text: 'kept running.', className: 'text-sand/60' },
+  ];
 
   return (
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-[100svh] flex items-center overflow-hidden bg-background"
+      className="relative min-h-[100dvh] flex items-center overflow-hidden bg-[#0A0B0D] pt-28 pb-28"
     >
-      {/* Background layer */}
-      <div className="absolute inset-0 z-0">
-        <AnimatedGridPattern
-          numSquares={isMobile ? 12 : 30}
-          maxOpacity={0.1}
-          duration={isMobile ? 5 : 3}
-          className="text-primary/20 absolute inset-0 h-full w-full opacity-50"
+      {/* low-key portrait, anchored right, dissolving into the canvas */}
+      {/* bg on the wrapper is load-bearing: animation transforms isolate the
+          blend, so the img's `lighten` must resolve against this layer */}
+      <div
+        aria-hidden
+        className="absolute inset-y-0 right-0 w-[88%] sm:w-[64%] lg:w-[48%] pointer-events-none max-lg:opacity-40 bg-[#0A0B0D]"
+      >
+        <img
+          ref={portraitRef}
+          src={PORTRAIT}
+          alt=""
+          className="absolute bottom-0 right-0 h-[96%] w-full object-contain select-none opacity-0"
+          style={{
+            objectPosition: 'right bottom',
+            // photo blacks are darker than the page background, so `lighten`
+            // dissolves the frame edges into the canvas with no visible seam
+            mixBlendMode: 'lighten',
+          }}
         />
-        <div className="absolute inset-0">
-          <Meteors number={isMobile ? 6 : 15} />
-        </div>
+        {/* soften the photo's own bottom crop line */}
+        <div className="absolute inset-x-0 bottom-0 h-[16%] bg-gradient-to-t from-[#0A0B0D] to-transparent" />
       </div>
 
-      {/* Blueprint Engine layer: Technical drawing illustration */}
-      <div className={`absolute right-[-20%] md:right-0 top-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-30 pointer-events-none z-0 ${isMobile ? '' : 'mix-blend-screen'}`}>
-        <BlueprintSvg isMobile={isMobile} />
-      </div>
-
-      {/* Content — Left aligned on desktop for split layout */}
-      <div className="relative z-20 w-full container mx-auto px-6 lg:px-12 pointer-events-none pt-24 md:pt-0">
-        <div className="max-w-3xl text-left">
-          <div className="mb-6 flex flex-col gap-2">
-            <div className="overflow-hidden pb-2">
-              <h1
-                ref={(el) => { lineRefs.current[0] = el; }}
-                className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight opacity-0 origin-bottom text-white/90"
-              >
-                Hi, I'm
-              </h1>
-            </div>
-
-            <div className="overflow-hidden py-2" style={{ marginTop: '-8px' }}>
-              <h1
-                ref={(el) => { lineRefs.current[1] = el; }}
-                className="text-6xl sm:text-8xl md:text-9xl lg:text-[140px] font-extralight tracking-tighter opacity-0 origin-bottom leading-[1.0] lg:leading-[0.9]"
-              >
-                <span className="text-white drop-shadow-2xl">Ali Alosimi</span>
-              </h1>
-            </div>
-
-            <div className="overflow-hidden mt-4 pt-2">
-              <span
-                ref={(el) => { lineRefs.current[2] = el; }}
-                className="text-3xl sm:text-4xl md:text-5xl text-accent block opacity-0 origin-bottom font-light"
-              >
-                Precision Engineer.
-              </span>
-            </div>
+      {/* type block */}
+      <div
+        className="relative z-10 w-full"
+        style={{ paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: '1.5rem' }}
+      >
+        <div className="max-w-[640px]">
+          <div className="overflow-hidden pb-1">
+            <span
+              ref={(el) => {
+                lineRefs.current[0] = el;
+              }}
+              className="block opacity-0 uppercase tracking-[0.32em] text-[11px] md:text-xs text-sand/55"
+            >
+              IT &amp; Systems Engineer
+            </span>
           </div>
+
+          <h1 className="mt-5 font-display font-medium tracking-tight leading-[1.04] text-[clamp(2.6rem,5.8vw,4.9rem)]">
+            {headlineLines.map((line, i) => (
+              <span key={line.text} className="block overflow-hidden">
+                <span
+                  ref={(el) => {
+                    lineRefs.current[i + 1] = el;
+                  }}
+                  className={`block opacity-0 ${line.className}`}
+                >
+                  {line.text}
+                </span>
+              </span>
+            ))}
+          </h1>
 
           <p
             ref={subtitleRef}
-            className="text-xl md:text-2xl text-muted-foreground/80 max-w-2xl mb-12 opacity-0 leading-relaxed font-light"
+            className="mt-7 max-w-[30rem] opacity-0 text-sand/80 text-[clamp(1rem,1.4vw,1.15rem)] leading-[1.65]"
           >
-            Building high-performance software with surgical precision.
-            Focused on scalable architectures, fluid interfaces, and flawless execution.
+            I manage CRM, ERP, and e-commerce platforms, and build the automation
+            that connects them. Based in Kuwait City.
           </p>
 
-          <div ref={ctaRef} className="flex flex-col sm:flex-row items-start gap-5 opacity-0">
+          <div
+            ref={ctaRef}
+            className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-5 opacity-0"
+          >
             <Button
+              data-magnetic
               size="lg"
-              className="bg-accent text-white hover:bg-accent/90 transition-all duration-300 text-lg px-10 py-7 shadow-glow-secondary-sm hover:shadow-glow-secondary pointer-events-auto rounded-none border border-accent/50"
-              onClick={() => {
-                const element = document.querySelector('#contact');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
+              className="h-[52px] px-8 text-base font-medium rounded-[10px] border-0 bg-cream text-[#0A0B0D] hover:bg-white transition-colors duration-150"
+              onClick={() => scrollTo('#projects')}
             >
-              Contact Me
+              View work
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-border bg-transparent hover:bg-white/5 transition-all duration-300 text-lg px-10 py-7 pointer-events-auto rounded-none text-white/90"
-              onClick={scrollToProjects}
+            <button
+              type="button"
+              className="group inline-flex items-center gap-2 text-base text-sand/75 hover:text-cream transition-colors duration-150 px-2 py-3"
+              onClick={() => scrollTo('#contact')}
             >
-              View Projects
-            </Button>
+              Contact
+              <span className="block h-px w-6 bg-sand/40 group-hover:w-9 group-hover:bg-cream transition-all duration-200" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute z-20 bottom-10 left-1/2 -translate-x-1/2 animate-bounce pointer-events-none">
-        <ArrowDown className="text-muted-foreground" size={24} />
-      </div>
     </section>
   );
 };

@@ -1,273 +1,193 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Button } from '@/components/ui/button';
-import LiveStatus from '@/components/LiveStatus';
-import SpotifyNowPlaying from '@/components/SpotifyNowPlaying';
-import {
-  siCisco,
-  siLinux,
-  siPython,
-  siVmware,
-} from 'simple-icons';
-import SplitType from 'split-type';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const skills = [
-  { name: 'Linux', icon: siLinux },
-  { name: 'Cisco', icon: siCisco },
-  { name: 'VMware', icon: siVmware },
-  { name: 'Python', icon: siPython },
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+
+const RESUME_PDF = '/assets/Ali_Oudah_Resum.pdf';
+
+const experience = [
+  {
+    role: 'Lead Technical Coordinator',
+    org: 'Aafaq Publishing & Distribution',
+    period: '2025–Present',
+  },
+  {
+    role: 'Student Mentor, Cybersecurity',
+    org: 'CODED · Kuwait University',
+    period: '2025',
+  },
+  {
+    role: 'IT Support Specialist',
+    org: 'Ticketmaster · 26th Gulf Cup',
+    period: '2024–25',
+  },
+  {
+    role: 'BSc Information Technology',
+    org: 'Arab Open University',
+    period: 'In progress',
+  },
 ];
 
-const About = () => {
-  const CITY = 'Kuwait City';
-  const TIMEZONE = 'Asia/Kuwait';
-  const profileImage = '/assets/ali.png';
-  const resumePdf = '/assets/Ali_Oudah_Resum.pdf';
+const capabilities = [
+  {
+    label: 'Systems',
+    items: 'Zoho CRM & ERP, workflow automation, e-commerce operations',
+  },
+  {
+    label: 'Code',
+    items: 'Python, JavaScript, Java, Node.js',
+  },
+  {
+    label: 'Foundation',
+    items: 'Networking, cybersecurity, IT project management',
+  },
+];
 
+const sidePadding = { paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: 'clamp(1.5rem, 6vw, 7rem)' };
+
+const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const narrativeRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const skillsRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const lineRefs = useRef<Array<HTMLElement | null>>([]);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const experienceRef = useRef<HTMLDivElement>(null);
+  const [reduce] = useState(prefersReducedMotion);
 
   useEffect(() => {
-    const prefersReducedMotion =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-
     const ctx = gsap.context(() => {
-      // Section fade in
-      gsap.fromTo(
-        sectionRef.current,
-        { opacity: 0 },
-        {
-          opacity: 1,
-          duration: 0.5,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-          },
-        }
-      );
+      const lines = lineRefs.current.filter(Boolean);
+      const rows = experienceRef.current ? Array.from(experienceRef.current.children) : [];
 
-      // Identity Card slide/fade in
+      if (reduce) {
+        gsap.set([...lines, bodyRef.current, ...rows], { opacity: 1, y: 0, yPercent: 0 });
+        return;
+      }
+
       gsap.fromTo(
-        cardRef.current,
-        { opacity: 0, x: 40 },
+        lines,
+        { yPercent: 115, opacity: 0 },
         {
+          yPercent: 0,
           opacity: 1,
-          x: 0,
-          duration: 1,
-          ease: 'power3.out',
+          stagger: 0.1,
+          duration: 0.95,
+          ease: 'power4.out',
           force3D: true,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-          },
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 74%' },
         }
       );
 
-      // Narrative slide/fade in
       gsap.fromTo(
-        narrativeRef.current,
-        { opacity: 0, y: 30 },
+        bodyRef.current,
+        { y: 26, opacity: 0 },
         {
-          opacity: 1,
           y: 0,
+          opacity: 1,
           duration: 0.8,
           ease: 'power2.out',
           force3D: true,
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 60%',
-          },
+          scrollTrigger: { trigger: bodyRef.current, start: 'top 84%' },
         }
       );
 
-      // Heading stagger reveal (words)
-      if (headingRef.current) {
-        const splitTitle = new SplitType(headingRef.current, { types: 'lines,words' });
-        gsap.set(splitTitle.lines, { overflow: 'hidden' });
-
-        if (prefersReducedMotion) {
-          gsap.set(splitTitle.words, { yPercent: 0, opacity: 1 });
-        } else {
-          gsap.fromTo(
-            splitTitle.words,
-            { yPercent: 110, opacity: 0 },
-            {
-              yPercent: 0,
-              opacity: 1,
-              duration: 0.9,
-              ease: 'power3.out',
-              stagger: 0.04,
-              force3D: true,
-              scrollTrigger: {
-                trigger: sectionRef.current,
-                start: 'top 60%',
-              },
-            }
-          );
-        }
-      }
-
-      // Skills stagger animation
-      gsap.fromTo(
-        skillsRef.current?.children || [],
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: skillsRef.current,
-            start: 'top 80%',
-          },
-        }
-      );
+      rows.forEach((row) => {
+        gsap.fromTo(
+          row,
+          { y: 20, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.65,
+            ease: 'power2.out',
+            force3D: true,
+            scrollTrigger: { trigger: row, start: 'top 90%' },
+          }
+        );
+      });
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [reduce]);
+
+  const statementLines: Array<{ text: string; className: string }> = [
+    { text: 'I like systems that are boring:', className: 'text-cream' },
+    { text: 'stable, secure, and fast.', className: 'text-sand/60' },
+  ];
 
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="py-24 md:py-32 relative overflow-hidden"
-    >
-      {/* Background elements */}
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,theme(colors.primary.DEFAULT/0.05)_0%,transparent_70%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] pointer-events-none" />
+    <section id="about" ref={sectionRef} className="relative bg-[#0A0B0D] py-28 md:py-36">
+      <div style={sidePadding}>
+        {/* statement bridge */}
+        <h2 className="font-display font-medium tracking-tight leading-[1.08] text-[clamp(1.9rem,4.2vw,3.4rem)] max-w-4xl">
+          {statementLines.map((line, i) => (
+            <span key={line.text} className="block overflow-hidden">
+              <span
+                ref={(el) => {
+                  lineRefs.current[i] = el;
+                }}
+                className={`block opacity-0 ${line.className}`}
+              >
+                {line.text}
+              </span>
+            </span>
+          ))}
+        </h2>
 
-      <div className="container mx-auto px-6 relative z-20 max-w-6xl">
-        <div className="grid lg:grid-cols-[1fr_400px] gap-12 lg:gap-20 items-stretch">
-          
-          {/* Narrative Block (Left) */}
-          <div
-            ref={narrativeRef}
-            className="flex flex-col justify-center"
-          >
-            <div className="inline-flex w-fit items-center border border-[#28282c] bg-[#0a0b0c] px-3 py-1 text-xs font-mono tracking-widest text-primary mb-6">
-              ID-01 // NARRATIVE
-            </div>
-            
-            <h2 ref={headingRef} className="font-display text-4xl md:text-5xl lg:text-5xl font-extralight tracking-tight mt-2 mb-8 text-foreground/90 leading-tight">
-              Crafting Immersive <br className="hidden md:block"/>
-              <span className="text-foreground font-normal">Digital Experiences.</span>
-            </h2>
-            
-            <p className="text-muted-foreground text-base md:text-lg leading-relaxed md:leading-loose mb-10 max-w-2xl">
-              I'm an <strong className="font-medium text-foreground">IT Specialist</strong> focused on
-              <strong className="font-medium text-foreground"> troubleshooting</strong>,
-              <strong className="font-medium text-foreground"> system administration</strong>, and
-              <strong className="font-medium text-foreground"> user support</strong>. I enjoy keeping
-              environments stable and secure, and I build simple automation and tools that make day-to-day work faster.
+        {/* narrative + capabilities */}
+        <div ref={bodyRef} className="opacity-0 mt-14 md:mt-16 grid md:grid-cols-2 gap-12 md:gap-20">
+          <div>
+            <p className="text-sand/75 text-base md:text-[17px] leading-[1.7] max-w-[34rem]">
+              I&apos;m an IT student at Arab Open University and Lead Technical Coordinator
+              at Aafaq Publishing &amp; Distribution in Kuwait. I keep CRM, ERP, and
+              e-commerce systems running and build the automation that connects them.
+              On the side, I mentor students in Python and JavaScript through the CODED
+              youth program.
             </p>
-
-            {/* CTA */}
-            <div className="flex justify-start mb-14">
+            <div className="mt-8">
               <Button
                 variant="outline"
-                className="bg-[#0a0b0c] border-[#28282c] text-foreground hover:bg-primary/10 hover:text-primary hover:border-primary/50 transition-colors rounded-none px-8 font-mono tracking-wide text-xs"
+                className="h-11 px-6 text-sm font-medium rounded-[8px] border border-cream/20 bg-transparent text-cream hover:bg-cream/10 hover:border-cream/50 transition-colors"
                 asChild
               >
-                <a href={resumePdf} download="Ali_Oudah_Resume.pdf">
-                  [ DOWNLOAD_CV ]
+                <a href={RESUME_PDF} download="Ali_Oudah_Resume.pdf">
+                  Download resume
                 </a>
               </Button>
             </div>
-
-            {/* Capability Matrix */}
-            <div>
-              <h3 className="text-xs font-mono tracking-widest text-muted-foreground mb-4 uppercase">Capability Matrix</h3>
-              <div ref={skillsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {skills.map((skill) => (
-                  <div
-                    key={skill.name}
-                    className="group flex flex-col items-center justify-center gap-3 p-6 bg-[#0a0b0c]/50 border border-[#28282c] hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 relative overflow-hidden"
-                    style={{ ['--tech-color' as unknown as keyof CSSProperties]: `#${skill.icon.hex}` } as CSSProperties}
-                  >
-                    {/* Hover Glow */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tech-color)_0%,transparent_70%)] opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
-                    
-                    <svg
-                      aria-hidden="true"
-                      focusable="false"
-                      viewBox="0 0 24 24"
-                      className="tech-icon h-8 w-8 text-muted-foreground/30 group-hover:text-[color:var(--tech-color)] transition-colors duration-300"
-                    >
-                      <path d={skill.icon.path} fill="currentColor" />
-                    </svg>
-                    <span className="text-xs font-mono tracking-widest text-muted-foreground/50 transition-colors duration-300 group-hover:text-foreground/90">
-                      {skill.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Identity Card (Right) */}
-          <div ref={cardRef} className="relative w-full h-full min-h-[500px]">
-            <div className="absolute inset-0 bg-[#0a0b0c] border border-[#28282c] rounded-xl flex flex-col overflow-hidden shadow-2xl">
-              
-              {/* Card Header */}
-              <div className="flex justify-between items-center px-4 py-3 border-b border-[#28282c] bg-white/[0.02]">
-                <div className="flex gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                </div>
-                <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest">v2.4.0-DEPLOYED</span>
+          <div>
+            {capabilities.map((cap) => (
+              <div key={cap.label} className="py-4 border-t border-cream/10 grid grid-cols-[7rem_1fr] gap-4">
+                <span className="text-sm font-medium text-cream/85">{cap.label}</span>
+                <span className="text-sm text-sand/65 leading-relaxed">{cap.items}</span>
               </div>
-
-              {/* Profile Image with Scan-lines */}
-              <div className="relative flex-1 bg-black/50 overflow-hidden flex items-end justify-center min-h-[300px]">
-                {/* Background ambient glow inside card */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,theme(colors.primary.DEFAULT/0.15)_0%,transparent_60%)]" />
-                
-                {/* CSS Scan-lines overlay */}
-                <div 
-                  className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-30 z-20" 
-                  style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #000 2px, #000 4px)' }} 
-                />
-
-                <img
-                  src={profileImage}
-                  alt="Ali Oudah - IT Specialist"
-                  className="relative z-10 w-[85%] h-auto object-contain select-none pointer-events-none origin-bottom scale-105 filter grayscale-[20%] contrast-125"
-                  style={{
-                    WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)',
-                    maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)',
-                  }}
-                />
-                
-                {/* Crosshair accents */}
-                <div className="absolute top-8 left-8 w-4 h-4 border-t border-l border-primary/50 opacity-50" />
-                <div className="absolute top-8 right-8 w-4 h-4 border-t border-r border-primary/50 opacity-50" />
-                <div className="absolute bottom-8 left-8 w-4 h-4 border-b border-l border-primary/50 opacity-50" />
-                <div className="absolute bottom-8 right-8 w-4 h-4 border-b border-r border-primary/50 opacity-50" />
-              </div>
-
-              {/* System Logs (Footer) */}
-              <div className="p-4 border-t border-[#28282c] bg-white/[0.01] flex flex-col gap-2">
-                 <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground/50 font-mono mb-2">System Telemetry</h4>
-                 <LiveStatus city={CITY} timeZone={TIMEZONE} />
-                 <SpotifyNowPlaying />
-              </div>
-
-            </div>
+            ))}
           </div>
+        </div>
 
+        {/* experience strip */}
+        <div className="mt-20 md:mt-24">
+          <p className="text-xs uppercase tracking-[0.2em] text-sand/45 mb-6">Experience</p>
+          <div ref={experienceRef} className="border-b border-cream/10">
+            {experience.map((item) => (
+              <div
+                key={item.role}
+                className="opacity-0 grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_auto] gap-1 sm:gap-6 items-baseline py-5 border-t border-cream/10"
+              >
+                <span className="text-base md:text-lg font-medium text-cream/90">{item.role}</span>
+                <span className="text-sm text-sand/60">{item.org}</span>
+                <span className="text-sm text-sand/45 sm:text-right tabular-nums">{item.period}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-
     </section>
   );
 };
