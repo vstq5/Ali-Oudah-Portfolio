@@ -7,56 +7,87 @@
 
 @layer base {
   :root {
-    /* Core colors - Linear-inspired Precision Theme */
-    --background: 210 11% 4%; /* #08090a */
-    --foreground: 0 0% 100%;
+    /* ── Warm cream ground, cool navy ink ───────────────────────────────────
+       Ground and accent follow Zapier; the ink ramp is cool navy per the
+       approved mockup. Space-separated HSL channels so Tailwind opacity
+       modifiers still resolve (e.g. bg-canvas/80).
 
-    --card: 210 11% 4%;
-    --card-foreground: 0 0% 100%;
+       Text uses DISCRETE ramp steps, never opacity. On a dark base an opacity
+       fade degrades gracefully toward the background; on a light base the same
+       modifier fades ink toward white and contrast collapses. Ratios below are
+       measured against --canvas. */
 
-    --popover: 210 11% 4%;
-    --popover-foreground: 0 0% 100%;
+    /* surfaces */
+    --canvas:         40 60% 98%;   /* #FDFBF7  page base, warm cream */
+    --elevated:        0 0% 100%;   /* #FFFFFF  cards, which sit *above* ground */
+    --surface:        40 33% 95%;   /* #F6F2EA  alternating section */
+    --surface-2:      40 25% 91%;   /* #EEE9DF  deeper well */
 
-    /* Liquid Silver/White - Primary text and highlights */
-    --primary: 0 0% 95%;
-    --primary-foreground: 0 0% 10%;
+    /* rules — hairlines */
+    --rule:           40 20% 89%;   /* #E9E5DD  default hairline */
+    --rule-strong:    40 14% 78%;   /* #CDC7BC  emphasis border */
 
-    /* Stripe Purple - Secondary glow and accents */
-    --secondary: 248 98% 61%; /* #533afd */
-    --secondary-foreground: 0 0% 100%;
+    /* ink ramp — cool navy on warm ground */
+    --ink:           216 42% 13%;   /* #131E2E  16.2:1  headings, any size */
+    --ink-muted:     211 12% 40%;   /* #5A6673   5.7:1  body copy, passes AA */
+    --ink-subtle:    213 13% 56%;   /* #808D9D   3.3:1  >=24px or decorative */
+    --ink-faint:     213 14% 72%;   /* #AEB7C2         ghost text only */
 
-    --muted: 210 11% 10%;
-    --muted-foreground: 0 0% 60%;
+    /* full-bleed dark bands, and the ramp that applies *inside* them */
+    --band:          212 38% 17%;   /* #1B2A3C  navy band */
+    --band-deep:     216 42% 13%;   /* #131E2E  deep band */
+    --band-ink:       40 43% 96%;   /* #F9F6F0  13.7:1 on --band */
+    --band-ink-muted:213 14% 72%;   /* #AEB7C2   7.9:1 on --band */
+    --band-rule:     212 25% 26%;   /* #324153  hairline on dark bands */
 
-    --accent: 248 98% 61%;
-    --accent-foreground: 0 0% 100%;
+    /* status — used only inside the hero diagram */
+    --ok:            146 45% 38%;   /* #358C55  synced dot */
+    --ok-soft:       145 40% 94%;   /* #E8F5EC  pill fill */
+    --brand-soft:     20 100% 95%;  /* #FFEBE0  pill fill */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 100%;
+    /* brand — deployed on <1% of painted area: eyebrow, icons, dots, arrow */
+    --brand:          17 100% 55%;  /* #FF5C1A  fills, icons, dots (non-text) */
+    --brand-ink:      21 100% 38%;  /* #C24400  small orange TEXT, 4.9:1 on ground */
+    --brand-hover:    17 100% 47%;  /* #F04600 */
 
-    --border: 240 5% 16%; /* #28282c */
-    --input: 240 5% 16%;
-    --ring: 248 98% 61%;
+    /* ── shadcn semantic tokens, aliased onto the palette above ─────────────
+       Indirection is deliberate: changing a palette token above propagates to
+       every one of the 64 files in src/components/ui/ without touching them. */
+    --background: var(--canvas);
+    --foreground: var(--ink);
+
+    --card: var(--elevated);
+    --card-foreground: var(--ink);
+
+    --popover: var(--elevated);
+    --popover-foreground: var(--ink);
+
+    /* primary is the dark ink fill, not the brand orange: the mockup's CTAs are
+       navy. It also sidesteps the contrast trap — white on #FF5C1A is only
+       2.99:1, while canvas on #131E2E is 16.2:1. Orange stays an accent. */
+    --primary: var(--ink);
+    --primary-foreground: var(--canvas);
+
+    --secondary: var(--surface);
+    --secondary-foreground: var(--ink);
+
+    --muted: var(--surface);
+    --muted-foreground: var(--ink-muted);
+
+    --accent: var(--surface-2);
+    --accent-foreground: var(--ink);
+
+    /* darkened from 0 84% 60%: the old red was 3.7:1 on a light canvas */
+    --destructive: 0 72% 42%;
+    --destructive-foreground: var(--canvas);
+
+    /* `* { @apply border-border }` in the base layer below means this one
+       token colours every default border on the site */
+    --border: var(--rule);
+    --input: var(--rule);
+    --ring: var(--brand);
 
     --radius: 0.75rem;
-
-    /* Semantic Glow Tokens */
-    --glow-primary: 0 0 40px hsl(0 0% 100% / 0.1);
-    --glow-secondary: 0 0 40px hsl(248 98% 61% / 0.2);
-    /* Smaller Glow Tokens */
-    --glow-primary-sm: 0 0 20px hsl(0 0% 100% / 0.05);
-    --glow-secondary-sm: 0 0 20px hsl(248 98% 61% / 0.15);
-    --glass-bg: hsl(0 0% 100% / 0.05);
-    --glass-border: hsl(0 0% 100% / 0.1);
-
-    /* Hero warm palette — derived from the cozy-study render (scoped to hero + nav HUD).
-       HSL channels so Tailwind opacity modifiers work (e.g. bg-terracotta/10). */
-    --terracotta: 15 74% 56%;       /* #E2643C burnt orange */
-    --terracotta-deep: 14 71% 42%;  /* #B8431F rust (hover) */
-    --mint: 157 70% 63%;            /* #5FE3B0 CRT screen echo */
-    --cream: 39 51% 91%;            /* #F4ECDD headings / warm off-white */
-    --sand: 36 29% 78%;             /* #D8CBB8 body / subtext */
-    --study: 21 12% 15%;            /* #2B2522 scene-darkest / page base */
   }
 }
 
@@ -80,47 +111,16 @@
     font-family: 'Space Grotesk', 'Inter', sans-serif;
   }
 
-  .highlight-text {
-    background: linear-gradient(90deg,
-        hsl(var(--primary)) 0%,
-        hsl(var(--foreground) / 0.85) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent;
-    display: inline-block;
-  }
-
-  .tech-icon {
-    filter: grayscale(100%);
-    opacity: 0.5;
-    transform: translateY(0);
-    transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .group:hover .tech-icon {
-    filter: grayscale(0%);
-    opacity: 1;
-    transform: translateY(-5px);
-  }
-
-  /* Glassmorphic card */
-  .glass-card {
-    @apply bg-[#121212]/90 border border-white/5 rounded-2xl;
-  }
-
-  /* Glow effects */
-  .glow-primary {
-    box-shadow: var(--glow-primary);
-  }
-
-  .glow-secondary {
-    box-shadow: var(--glow-secondary);
-  }
-
-  /* Text gradient */
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary to-primary;
+  /* The one content column. Every section uses this so the nav, hero, work
+     rows and footer share a single left/right edge. Without the max-width the
+     layout stretches edge-to-edge on wide monitors, which is what made the
+     hero read sparse and cramped at the same time on a 2560px screen. */
+  .shell {
+    margin-inline: auto;
+    /* 100rem − 2×4rem padding = a 1472px content column, which is the width the
+       hero mockup was drawn at; the type/diagram split below assumes it */
+    max-width: 100rem;
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
   }
 
   /* Floating animation */
@@ -151,6 +151,150 @@
 
 @layer utilities {
 
+  /* Dotted connector rails for the hero diagram. A gradient rather than
+     `border-dotted`, because a 1px dotted border anti-aliases into near
+     invisibility at this scale. */
+  .rail-x {
+    background-image: repeating-linear-gradient(to right,
+        hsl(var(--ink-faint)) 0 2px,
+        transparent 2px 6px);
+  }
+
+  .rail-y {
+    background-image: repeating-linear-gradient(to bottom,
+        hsl(var(--ink-faint)) 0 2px,
+        transparent 2px 6px);
+  }
+
+  /* The active flow draws itself in. 600 comfortably exceeds any rail length
+     here, so short paths simply finish early. */
+  .rail-live {
+    stroke-linecap: round;
+    stroke-dasharray: 600;
+    animation: railDraw 0.85s ease-out both;
+  }
+
+  /* Hub activity bar, after Zapier's: a stationary orange dot matrix with a
+     soft highlight sweeping across it. Both layers share `background-size`, so
+     the sweep lights the very same dots rather than sliding a second grid over
+     them — which is why the mask moves and the element does not. */
+  .dot-bar {
+    position: relative;
+    overflow: hidden;
+    background-image: radial-gradient(hsl(var(--brand) / 0.3) 1.1px, transparent 1.4px);
+    background-size: 7px 7px;
+  }
+
+  .dot-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(hsl(var(--brand)) 1.1px, transparent 1.4px);
+    background-size: 7px 7px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 35%, #000 50%, transparent 65%);
+    mask-image: linear-gradient(90deg, transparent 35%, #000 50%, transparent 65%);
+    -webkit-mask-size: 260% 100%;
+    mask-size: 260% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    animation: dotSweep 2.4s linear infinite;
+  }
+}
+
+@keyframes dotSweep {
+
+  /* an oversized mask: 100% parks the bright window off-left, 0% off-right,
+     so counting down sweeps it left to right */
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+
+  to {
+    -webkit-mask-position: 0% 0;
+    mask-position: 0% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot-bar::after {
+    animation: none;
+    opacity: 0.55;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+@keyframes railDraw {
+  from {
+    stroke-dashoffset: 600;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-live {
+    animation: none;
+    stroke-dasharray: none;
+  }
+}
+
+@layer utilities {
+
+  /* "Worked with" marquee. The eight institution marks come from eight
+     different sources in mixed formats and palettes; forcing one grey is what
+     makes them read as a single set. `logo-invert` is for AUK, whose only
+     published mark is white-on-dark and would otherwise vanish on the cream.
+     Ink is per-logo (`--logo-ink`) rather than one global value: the sources
+     range from a solid black wordmark to a mid-grey seal, so a single opacity
+     leaves some marks shouting and others invisible. Tuned by eye at render
+     size, not by source lightness. */
+  .logo-mono {
+    filter: grayscale(1) contrast(var(--logo-contrast, 1)) opacity(var(--logo-ink, 0.55));
+  }
+
+  .logo-mono.logo-invert {
+    filter: invert(1) grayscale(1) contrast(var(--logo-contrast, 1)) opacity(var(--logo-ink, 0.55));
+  }
+
+  /* Edge dissolve for the marquee viewport. Zapier does this with two 50px
+     absolutely-positioned gradients rather than a mask, so the logos fade out
+     into the page instead of being guillotined at the container edge — it is
+     the single detail that makes their strip read as a loop.
+     The far stop is `--canvas` at zero alpha, not `transparent`: the keyword
+     resolves to transparent *black* and interpolates through grey, which
+     smears a dirty band across a warm ground. */
+  .marquee-fade {
+    position: relative;
+    /* Zapier's 50px, but that is a fifth of a 320px phone strip — two fades
+       would swallow a third of the row. Scale it with the viewport instead. */
+    --fade: clamp(24px, 5vw, 50px);
+  }
+
+  .marquee-fade::before,
+  .marquee-fade::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--fade);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .marquee-fade::before {
+    left: 0;
+    background: linear-gradient(90deg, hsl(var(--canvas)) 0%, hsl(var(--canvas) / 0) 100%);
+  }
+
+  .marquee-fade::after {
+    right: 0;
+    background: linear-gradient(270deg, hsl(var(--canvas)) 0%, hsl(var(--canvas) / 0) 100%);
+  }
+
   /* Custom scrollbar */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -179,11 +323,11 @@
 
   0%,
   100% {
-    box-shadow: 0 0 20px hsl(24 100% 50% / 0.3);
+    box-shadow: 0 0 20px hsl(var(--brand) / 0.3);
   }
 
   50% {
-    box-shadow: 0 0 40px hsl(24 100% 50% / 0.6);
+    box-shadow: 0 0 40px hsl(var(--brand) / 0.6);
   }
 }
 
@@ -227,6 +371,36 @@
   .footer-marquee { animation: none !important; }
 }
 
+/* ToolsRing: the orbit, its cancelling counter-rotation, and the signal arc.
+   `toolsOrbit` and `toolsCounterOrbit` MUST share a duration — they are a
+   matched pair whose rotations cancel, and any drift between them makes the
+   marks slowly tumble as they travel. */
+@keyframes toolsOrbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes toolsCounterOrbit {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes toolsArc {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.tools-orbit   { animation: toolsOrbit 30s linear infinite; }
+.tools-counter { animation: toolsCounterOrbit 30s linear infinite; }
+.tools-arc     { animation: toolsArc 6s linear infinite; transform-origin: 50% 50%; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* All three together, and this is not tidiness. Stopping the orbit alone
+     leaves every icon still running its -360° counter-rotation, so the marks
+     spin in place — worse than the animation this is meant to suppress. */
+  .tools-orbit,
+  .tools-counter,
+  .tools-arc { animation: none !important; }
+}
+
 /* Added during scroll to prevent expensive hit-testing on the DOM */
 .disable-hover,
 .disable-hover * {
@@ -266,7 +440,9 @@ section {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.05;
+  /* 0.05 was invisible over a near-black canvas; over #FFFEFB the same grain
+     reads as dirty grey, so the tile is dialled back for the light palette */
+  opacity: 0.02;
   background-repeat: repeat;
   background-size: 200px 200px;
   /* mix-blend-mode: overlay; - REMOVED: Massive GPU compositing killer over 3D scenes */

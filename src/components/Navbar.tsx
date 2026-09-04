@@ -44,21 +44,18 @@ const Navbar = () => {
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#0A0B0D]/85 backdrop-blur-md border-b border-cream/10'
+          ? 'bg-canvas/80 backdrop-blur-md border-b border-rule'
           : 'bg-transparent border-b border-transparent'
       }`}
     >
-      <div
-        className="w-full py-4 flex items-center justify-between"
-        style={{ paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: 'clamp(1.5rem, 6vw, 7rem)' }}
-      >
+      <div className="shell flex w-full items-center justify-between py-4">
         <a
           href="#hero"
           onClick={(e) => {
             e.preventDefault();
             scrollToSection('#hero');
           }}
-          className="text-base font-medium tracking-tight text-cream hover:text-sand transition-colors"
+          className="text-[17px] font-semibold tracking-tight text-ink transition-colors hover:text-ink-muted"
         >
           Ali Oudah
         </a>
@@ -73,25 +70,24 @@ const Navbar = () => {
                 e.preventDefault();
                 scrollToSection(link.href);
               }}
-              className="text-sm text-sand/70 hover:text-cream transition-colors relative group"
+              className="text-sm text-ink-muted hover:text-ink transition-colors relative group"
             >
               {link.name}
-              <span className="absolute -bottom-1.5 left-0 w-0 h-px bg-cream/50 transition-all duration-200 group-hover:w-full" />
+              <span className="absolute -bottom-1.5 left-0 w-0 h-px bg-ink transition-all duration-200 group-hover:w-full" />
             </a>
           ))}
           <Button
-            variant="outline"
             size="sm"
-            className="h-9 px-5 text-sm font-medium rounded-[8px] border border-cream/20 bg-transparent text-cream hover:bg-cream/10 hover:border-cream/50 transition-colors ml-2"
+            className="ml-2 h-10 rounded-[8px] border-0 bg-ink px-5 text-sm font-medium text-canvas transition-colors hover:bg-band"
             onClick={() => scrollToSection('#contact')}
           >
-            Get in touch
+            Talk about your setup
           </Button>
         </div>
 
         {/* Mobile menu button */}
         <button
-          className="md:hidden text-cream p-2 hover:text-sand transition-colors"
+          className="md:hidden text-ink p-2 hover:text-ink-muted transition-colors"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle menu"
         >
@@ -101,7 +97,7 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       <div
-        className={`md:hidden fixed inset-0 top-[61px] bg-[#0A0B0D]/95 backdrop-blur-lg border-t border-cream/10 transition-all duration-300 ${
+        className={`md:hidden fixed inset-0 top-[61px] bg-canvas/95 backdrop-blur-lg border-t border-rule transition-all duration-300 ${
           isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
         }`}
       >
@@ -114,16 +110,16 @@ const Navbar = () => {
                 e.preventDefault();
                 scrollToSection(link.href);
               }}
-              className="text-3xl font-display text-cream hover:text-sand transition-colors py-4 border-b border-cream/10"
+              className="text-3xl font-display text-ink hover:text-ink-muted transition-colors py-4 border-b border-rule"
             >
               {link.name}
             </a>
           ))}
           <Button
-            className="w-full h-12 bg-cream text-[#0A0B0D] hover:bg-white mt-8 rounded-[10px] text-base font-medium"
+            className="mt-8 h-12 w-full rounded-[10px] bg-ink text-base font-medium text-canvas hover:bg-band"
             onClick={() => scrollToSection('#contact')}
           >
-            Get in touch
+            Talk about your setup
           </Button>
         </div>
       </div>

@@ -49,8 +49,6 @@ const capabilities = [
   },
 ];
 
-const sidePadding = { paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: 'clamp(1.5rem, 6vw, 7rem)' };
-
 const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const lineRefs = useRef<Array<HTMLElement | null>>([]);
@@ -115,13 +113,13 @@ const About = () => {
   }, [reduce]);
 
   const statementLines: Array<{ text: string; className: string }> = [
-    { text: 'I like systems that are boring:', className: 'text-cream' },
-    { text: 'stable, secure, and fast.', className: 'text-sand/60' },
+    { text: 'I like systems that are boring:', className: 'text-ink' },
+    { text: 'stable, secure, and fast.', className: 'text-ink-muted' },
   ];
 
   return (
-    <section id="about" ref={sectionRef} className="relative bg-[#0A0B0D] py-28 md:py-36">
-      <div style={sidePadding}>
+    <section id="about" ref={sectionRef} className="relative bg-surface py-28 md:py-36">
+      <div className="shell">
         {/* statement bridge */}
         <h2 className="font-display font-medium tracking-tight leading-[1.08] text-[clamp(1.9rem,4.2vw,3.4rem)] max-w-4xl">
           {statementLines.map((line, i) => (
@@ -141,7 +139,7 @@ const About = () => {
         {/* narrative + capabilities */}
         <div ref={bodyRef} className="opacity-0 mt-14 md:mt-16 grid md:grid-cols-2 gap-12 md:gap-20">
           <div>
-            <p className="text-sand/75 text-base md:text-[17px] leading-[1.7] max-w-[34rem]">
+            <p className="text-ink-muted text-base md:text-[17px] leading-[1.7] max-w-[34rem]">
               I&apos;m an IT student at Arab Open University and Lead Technical Coordinator
               at Aafaq Publishing &amp; Distribution in Kuwait. I keep CRM, ERP, and
               e-commerce systems running and build the automation that connects them.
@@ -151,7 +149,7 @@ const About = () => {
             <div className="mt-8">
               <Button
                 variant="outline"
-                className="h-11 px-6 text-sm font-medium rounded-[8px] border border-cream/20 bg-transparent text-cream hover:bg-cream/10 hover:border-cream/50 transition-colors"
+                className="h-11 px-6 text-sm font-medium rounded-[8px] border border-rule bg-transparent text-ink hover:bg-surface-deep hover:border-rule-strong transition-colors"
                 asChild
               >
                 <a href={RESUME_PDF} download="Ali_Oudah_Resume.pdf">
@@ -163,9 +161,9 @@ const About = () => {
 
           <div>
             {capabilities.map((cap) => (
-              <div key={cap.label} className="py-4 border-t border-cream/10 grid grid-cols-[7rem_1fr] gap-4">
-                <span className="text-sm font-medium text-cream/85">{cap.label}</span>
-                <span className="text-sm text-sand/65 leading-relaxed">{cap.items}</span>
+              <div key={cap.label} className="py-4 border-t border-rule grid grid-cols-[7rem_1fr] gap-4">
+                <span className="text-sm font-medium text-ink">{cap.label}</span>
+                <span className="text-sm text-ink-muted leading-relaxed">{cap.items}</span>
               </div>
             ))}
           </div>
@@ -173,16 +171,16 @@ const About = () => {
 
         {/* experience strip */}
         <div className="mt-20 md:mt-24">
-          <p className="text-xs uppercase tracking-[0.2em] text-sand/45 mb-6">Experience</p>
-          <div ref={experienceRef} className="border-b border-cream/10">
+          <p className="text-xs uppercase tracking-[0.2em] text-ink-muted mb-6">Experience</p>
+          <div ref={experienceRef} className="border-b border-rule">
             {experience.map((item) => (
               <div
                 key={item.role}
-                className="opacity-0 grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_auto] gap-1 sm:gap-6 items-baseline py-5 border-t border-cream/10"
+                className="opacity-0 grid grid-cols-1 sm:grid-cols-[1.2fr_1fr_auto] gap-1 sm:gap-6 items-baseline py-5 border-t border-rule"
               >
-                <span className="text-base md:text-lg font-medium text-cream/90">{item.role}</span>
-                <span className="text-sm text-sand/60">{item.org}</span>
-                <span className="text-sm text-sand/45 sm:text-right tabular-nums">{item.period}</span>
+                <span className="text-base md:text-lg font-medium text-ink">{item.role}</span>
+                <span className="text-sm text-ink-muted">{item.org}</span>
+                <span className="text-sm text-ink-muted sm:text-right tabular-nums">{item.period}</span>
               </div>
             ))}
           </div>

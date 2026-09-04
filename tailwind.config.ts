@@ -51,17 +51,44 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        glass: "hsl(0 0% 100% / 0.05)",
-        "glass-border": "hsl(0 0% 100% / 0.1)",
-        // Hero warm palette (cozy study) — used by Hero + nav HUD
-        terracotta: {
-          DEFAULT: "hsl(var(--terracotta))",
-          deep: "hsl(var(--terracotta-deep))",
+        // ── Warm cream ground, cool navy ink (see :root in src/index.css) ──
+        canvas: "hsl(var(--canvas))",
+        elevated: "hsl(var(--elevated))",
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          deep: "hsl(var(--surface-2))",
         },
-        mint: "hsl(var(--mint))",
-        cream: "hsl(var(--cream))",
-        sand: "hsl(var(--sand))",
-        study: "hsl(var(--study))",
+        ok: {
+          DEFAULT: "hsl(var(--ok))",
+          soft: "hsl(var(--ok-soft))",
+        },
+        rule: {
+          DEFAULT: "hsl(var(--rule))",
+          strong: "hsl(var(--rule-strong))",
+        },
+        ink: {
+          DEFAULT: "hsl(var(--ink))",
+          muted: "hsl(var(--ink-muted))",
+          subtle: "hsl(var(--ink-subtle))",
+          faint: "hsl(var(--ink-faint))",
+        },
+        // `band` is both the dark section fills and the ramp used *inside*
+        // them, where the light-palette ink steps would be invisible
+        band: {
+          DEFAULT: "hsl(var(--band))",
+          deep: "hsl(var(--band-deep))",
+          ink: "hsl(var(--band-ink))",
+          muted: "hsl(var(--band-ink-muted))",
+          rule: "hsl(var(--band-rule))",
+        },
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          // `brand-ink` is the AA-safe orange for small TEXT; plain `brand` is
+          // only 2.99:1 on the cream ground, fine for icons but not 13px labels
+          ink: "hsl(var(--brand-ink))",
+          soft: "hsl(var(--brand-soft))",
+          hover: "hsl(var(--brand-hover))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -69,12 +96,6 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         "2xl": "1rem",
         "3xl": "1.5rem",
-      },
-      boxShadow: {
-        "glow-primary": "var(--glow-primary)",
-        "glow-secondary": "var(--glow-secondary)",
-        "glow-primary-sm": "var(--glow-primary-sm)",
-        "glow-secondary-sm": "var(--glow-secondary-sm)",
       },
       keyframes: {
         "accordion-down": {

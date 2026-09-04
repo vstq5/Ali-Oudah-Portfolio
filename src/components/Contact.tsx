@@ -16,8 +16,6 @@ const socials = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ali-oudah' },
 ];
 
-const sidePadding = { paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: 'clamp(1.5rem, 6vw, 7rem)' };
-
 const Contact = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -62,28 +60,28 @@ const Contact = () => {
   }, [reduce]);
 
   return (
-    <section id="contact" ref={sectionRef} className="relative bg-[#0A0B0D] py-28 md:py-40">
-      <div style={sidePadding}>
+    <section id="contact" ref={sectionRef} className="relative bg-band py-28 md:py-40">
+      <div className="shell">
         <div className="overflow-hidden">
           <h2
             ref={headingRef}
-            className="font-display opacity-0 font-medium tracking-tight text-cream text-[clamp(2.8rem,7vw,5.5rem)] leading-none"
+            className="font-display opacity-0 font-medium tracking-tight text-band-ink text-[clamp(2.8rem,7vw,5.5rem)] leading-none"
           >
             Let&apos;s talk.
           </h2>
         </div>
 
         <div ref={bodyRef} className="opacity-0">
-          <p className="mt-7 max-w-[30rem] text-sand/75 text-base md:text-[17px] leading-[1.7]">
+          <p className="mt-7 max-w-[30rem] text-band-muted text-base md:text-[17px] leading-[1.7]">
             Open to roles and freelance work. Email is the fastest way to reach me.
           </p>
 
           <a
             href={`mailto:${EMAIL}`}
-            className="group inline-block mt-12 font-display font-medium tracking-tight text-cream text-[clamp(1.35rem,3.8vw,3rem)] leading-tight break-all"
+            className="group inline-block mt-12 font-display font-medium tracking-tight text-band-ink text-[clamp(1.35rem,3.8vw,3rem)] leading-tight break-all"
           >
             {EMAIL}
-            <span className="block h-px mt-3 bg-cream/20 group-hover:bg-cream transition-colors duration-200" />
+            <span className="block h-px mt-3 bg-band-rule group-hover:bg-brand transition-colors duration-200" />
           </a>
 
           <div className="mt-14 flex flex-wrap items-center gap-8">
@@ -93,12 +91,12 @@ const Contact = () => {
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center gap-1.5 text-sm text-sand/70 hover:text-cream transition-colors duration-150"
+                className="group inline-flex items-center gap-1.5 text-sm text-band-muted hover:text-band-ink transition-colors duration-150"
               >
                 {s.label}
                 <ArrowUpRight
                   size={15}
-                  className="text-sand/40 group-hover:text-cream group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all duration-150"
+                  className="text-ink-subtle group-hover:text-brand group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all duration-150"
                 />
               </a>
             ))}

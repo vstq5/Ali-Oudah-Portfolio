@@ -1,50 +1,44 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import HeroDiagram from '@/components/HeroDiagram';
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
 
-const PORTRAIT = '/assets/portrait-ali.jpg';
-
 /**
- * Editorial hero — near-black canvas, low-key portrait dissolving into the
- * background, quiet factual meta row. Type carries the message; motion is a
- * single masked line reveal, then stillness.
+ * Freelance hero — warm cream ground, navy type on the left, and the
+ * Shopify → implementation → Zoho diagram on the right. Motion is one masked
+ * line reveal plus a soft fade for the diagram, then stillness.
  */
 const Hero = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const portraitRef = useRef<HTMLImageElement>(null);
   const lineRefs = useRef<Array<HTMLElement | null>>([]);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const diagramRef = useRef<HTMLDivElement>(null);
   const [reduce] = useState(prefersReducedMotion);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const lines = lineRefs.current.filter(Boolean);
-      const rest = [subtitleRef.current, ctaRef.current].filter(Boolean);
+      const rest = [subtitleRef.current, ctaRef.current, diagramRef.current].filter(Boolean);
 
       // reduced motion still needs the opacity-0 elements revealed
       if (reduce) {
-        gsap.set([portraitRef.current, ...lines, ...rest], { opacity: 1 });
+        gsap.set([...lines, ...rest], { opacity: 1 });
         return;
       }
 
       const tl = gsap.timeline({ delay: 0.15 });
       tl.fromTo(
-        portraitRef.current,
-        { opacity: 0, scale: 1.03 },
-        { opacity: 1, scale: 1, duration: 1.6, ease: 'power2.out', force3D: true },
-        0
+        lines,
+        { yPercent: 115, opacity: 0 },
+        { yPercent: 0, opacity: 1, stagger: 0.1, duration: 0.95, ease: 'power4.out', force3D: true },
+        0.2
       )
-        .fromTo(
-          lines,
-          { yPercent: 115, opacity: 0 },
-          { yPercent: 0, opacity: 1, stagger: 0.11, duration: 1.0, ease: 'power4.out', force3D: true },
-          0.2
-        )
         .fromTo(
           subtitleRef.current,
           { y: 20, opacity: 0 },
@@ -56,6 +50,12 @@ const Hero = () => {
           { y: 14, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.65, ease: 'power2.out' },
           '-=0.45'
+        )
+        .fromTo(
+          diagramRef.current,
+          { y: 24, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, ease: 'power2.out' },
+          '-=0.75'
         );
     }, sectionRef);
     return () => ctx.revert();
@@ -91,58 +91,35 @@ const Hero = () => {
   };
 
   const headlineLines: Array<{ text: string; className: string }> = [
-    { text: 'Ali Oudah.', className: 'text-cream' },
-    { text: 'Reliable systems,', className: 'text-sand/60' },
-    { text: 'kept running.', className: 'text-sand/60' },
+    { text: 'Shopify stores.', className: 'text-ink' },
+    { text: 'Zoho systems.', className: 'text-ink' },
+    { text: 'Less manual work.', className: 'text-ink-subtle' },
   ];
 
   return (
     <section
       id="hero"
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center overflow-hidden bg-[#0A0B0D] pt-28 pb-28"
+      className="relative overflow-hidden bg-canvas pb-20 pt-32 lg:pb-28 lg:pt-36"
     >
-      {/* low-key portrait, anchored right, dissolving into the canvas */}
-      {/* bg on the wrapper is load-bearing: animation transforms isolate the
-          blend, so the img's `lighten` must resolve against this layer */}
-      <div
-        aria-hidden
-        className="absolute inset-y-0 right-0 w-[88%] sm:w-[64%] lg:w-[48%] pointer-events-none max-lg:opacity-40 bg-[#0A0B0D]"
-      >
-        <img
-          ref={portraitRef}
-          src={PORTRAIT}
-          alt=""
-          className="absolute bottom-0 right-0 h-[96%] w-full object-contain select-none opacity-0"
-          style={{
-            objectPosition: 'right bottom',
-            // photo blacks are darker than the page background, so `lighten`
-            // dissolves the frame edges into the canvas with no visible seam
-            mixBlendMode: 'lighten',
-          }}
-        />
-        {/* soften the photo's own bottom crop line */}
-        <div className="absolute inset-x-0 bottom-0 h-[16%] bg-gradient-to-t from-[#0A0B0D] to-transparent" />
-      </div>
-
-      {/* type block */}
-      <div
-        className="relative z-10 w-full"
-        style={{ paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: '1.5rem' }}
-      >
-        <div className="max-w-[640px]">
+      {/* 0.81 : 1 is the mockup's type-to-diagram split. It also has to leave the
+          longest headline line ("Less manual work.", 603px at 72px) on one line —
+          drop the ratio and it wraps. */}
+      <div className="shell grid w-full items-center gap-x-12 gap-y-14 lg:grid-cols-[minmax(0,0.81fr)_minmax(0,1fr)] xl:gap-x-16">
+        {/* ── type ──────────────────────────────────────────────────────── */}
+        <div className="max-w-[42rem]">
           <div className="overflow-hidden pb-1">
             <span
               ref={(el) => {
                 lineRefs.current[0] = el;
               }}
-              className="block opacity-0 uppercase tracking-[0.32em] text-[11px] md:text-xs text-sand/55"
+              className="block text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-ink opacity-0 md:text-xs"
             >
-              IT &amp; Systems Engineer
+              Shopify + Zoho Implementation
             </span>
           </div>
 
-          <h1 className="mt-5 font-display font-medium tracking-tight leading-[1.04] text-[clamp(2.6rem,5.8vw,4.9rem)]">
+          <h1 className="mt-5 font-display text-[clamp(2.3rem,4.6vw,4.5rem)] font-medium leading-[1.06] tracking-tight">
             {headlineLines.map((line, i) => (
               <span key={line.text} className="block overflow-hidden">
                 <span
@@ -159,36 +136,44 @@ const Hero = () => {
 
           <p
             ref={subtitleRef}
-            className="mt-7 max-w-[30rem] opacity-0 text-sand/80 text-[clamp(1rem,1.4vw,1.15rem)] leading-[1.65]"
+            className="mt-7 max-w-[30rem] text-[clamp(1rem,1.3vw,1.1rem)] leading-[1.65] text-ink-muted opacity-0"
           >
-            I manage CRM, ERP, and e-commerce platforms, and build the automation
-            that connects them. Based in Kuwait City.
+            I build and connect the systems behind growing businesses — from Shopify
+            storefronts to Zoho CRM, inventory, support, and automation workflows.
           </p>
 
           <div
             ref={ctaRef}
-            className="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-5 opacity-0"
+            className="mt-10 flex flex-col items-stretch gap-4 opacity-0 sm:flex-row sm:items-center sm:gap-6"
           >
             <Button
               data-magnetic
               size="lg"
-              className="h-[52px] px-8 text-base font-medium rounded-[10px] border-0 bg-cream text-[#0A0B0D] hover:bg-white transition-colors duration-150"
-              onClick={() => scrollTo('#projects')}
+              className="h-[52px] rounded-[10px] border-0 bg-ink px-7 text-base font-medium text-canvas transition-colors duration-150 hover:bg-band"
+              onClick={() => scrollTo('#contact')}
             >
-              View work
+              Talk about your setup
             </Button>
             <button
               type="button"
-              className="group inline-flex items-center gap-2 text-base text-sand/75 hover:text-cream transition-colors duration-150 px-2 py-3"
-              onClick={() => scrollTo('#contact')}
+              className="group inline-flex items-center justify-center gap-2 px-2 py-3 text-base font-medium text-ink transition-colors duration-150 hover:text-brand-ink sm:justify-start"
+              onClick={() => scrollTo('#projects')}
             >
-              Contact
-              <span className="block h-px w-6 bg-sand/40 group-hover:w-9 group-hover:bg-cream transition-all duration-200" />
+              View selected work
+              <ArrowRight
+                size={17}
+                className="shrink-0 text-brand transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden
+              />
             </button>
           </div>
         </div>
-      </div>
 
+        {/* ── diagram ───────────────────────────────────────────────────── */}
+        <div ref={diagramRef} className="opacity-0">
+          <HeroDiagram />
+        </div>
+      </div>
     </section>
   );
 };

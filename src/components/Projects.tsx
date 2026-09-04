@@ -68,32 +68,30 @@ const work: WorkItem[] = [
   },
 ];
 
-const sidePadding = { paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: 'clamp(1.5rem, 6vw, 7rem)' };
-
 const RowInner = ({ item }: { item: WorkItem }) => (
   <>
-    <span className="hidden md:block text-xs tracking-[0.2em] text-sand/40 pt-3">{item.index}</span>
+    <span className="hidden md:block text-xs tracking-[0.2em] text-ink-muted pt-3">{item.index}</span>
 
     <div>
       <div className="flex items-baseline gap-4">
-        <span className="md:hidden text-xs tracking-[0.2em] text-sand/40">{item.index}</span>
-        <h3 className="font-display text-2xl md:text-[2rem] font-medium tracking-tight text-cream/90 group-hover:text-white transition-colors duration-200 inline-flex items-center gap-2">
+        <span className="md:hidden text-xs tracking-[0.2em] text-ink-muted">{item.index}</span>
+        <h3 className="font-display text-2xl md:text-[2rem] font-medium tracking-tight text-ink group-hover:text-brand transition-colors duration-200 inline-flex items-center gap-2">
           {item.title}
           {item.url && (
             <ArrowUpRight
               size={20}
-              className="text-sand/40 group-hover:text-cream transition-colors duration-200 shrink-0"
+              className="text-ink-subtle group-hover:text-brand transition-colors duration-200 shrink-0"
             />
           )}
         </h3>
       </div>
-      <p className="mt-2 text-xs uppercase tracking-[0.14em] text-sand/50">{item.meta}</p>
-      <p className="mt-3 text-sm md:text-[15px] leading-relaxed text-sand/70 max-w-xl">
+      <p className="mt-2 text-xs uppercase tracking-[0.14em] text-ink-muted">{item.meta}</p>
+      <p className="mt-3 text-sm md:text-[15px] leading-relaxed text-ink-muted max-w-xl">
         {item.description}
       </p>
     </div>
 
-    <div className="w-full md:w-[240px] aspect-[4/3] rounded-lg overflow-hidden border border-cream/10 bg-[#101114] shrink-0">
+    <div className="w-full md:w-[240px] aspect-[4/3] rounded-lg overflow-hidden border border-rule bg-surface-deep shrink-0">
       {item.image ? (
         <img
           src={item.image}
@@ -105,7 +103,7 @@ const RowInner = ({ item }: { item: WorkItem }) => (
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center">
-          <span className="text-xs uppercase tracking-[0.2em] text-sand/45">{item.fact}</span>
+          <span className="text-xs uppercase tracking-[0.2em] text-ink-muted">{item.fact}</span>
         </div>
       )}
     </div>
@@ -160,21 +158,21 @@ const Projects = () => {
   }, [reduce]);
 
   const rowClass =
-    'group grid grid-cols-1 md:grid-cols-[3.5rem_1fr_240px] gap-5 md:gap-8 items-start md:items-center py-9 md:py-10 border-t border-cream/10 opacity-0';
+    'group grid grid-cols-1 md:grid-cols-[3.5rem_1fr_240px] gap-5 md:gap-8 items-start md:items-center py-9 md:py-10 border-t border-rule opacity-0';
 
   return (
-    <section id="projects" ref={sectionRef} className="relative bg-[#0A0B0D] py-28 md:py-36">
-      <div style={sidePadding}>
+    <section id="projects" ref={sectionRef} className="relative bg-canvas py-28 md:py-36">
+      <div className="shell">
         <div className="overflow-hidden mb-14 md:mb-16">
           <h2
             ref={headingRef}
-            className="font-display opacity-0 text-4xl md:text-5xl font-medium tracking-tight text-cream"
+            className="font-display opacity-0 text-4xl md:text-5xl font-medium tracking-tight text-ink"
           >
             Selected work.
           </h2>
         </div>
 
-        <div ref={rowsRef} className="border-b border-cream/10">
+        <div ref={rowsRef} className="border-b border-rule">
           {work.map((item) =>
             item.url ? (
               <a

@@ -8,8 +8,6 @@ const links = [
   { label: 'Email', href: 'mailto:alialoudah5@gmail.com' },
 ];
 
-const sidePadding = { paddingLeft: 'clamp(1.5rem, 6vw, 7rem)', paddingRight: 'clamp(1.5rem, 6vw, 7rem)' };
-
 const kuwaitTime = () =>
   new Intl.DateTimeFormat('en-GB', {
     hour: '2-digit',
@@ -27,19 +25,19 @@ const Footer = () => {
 
   const names = Array.from({ length: MARQUEE_REPEATS }, (_, i) => (
     <span key={i} className="pr-14">
-      Ali Oudah <span className="text-cream/[0.04]">·</span>
+      Ali Oudah <span className="text-band-rule">·</span>
     </span>
   ));
 
   return (
-    <footer className="relative bg-[#0A0B0D] border-t border-cream/10 overflow-hidden">
+    <footer className="relative bg-band-deep border-t border-band-rule overflow-hidden">
       {/* name marquee */}
       <div aria-hidden className="overflow-hidden py-8 md:py-12">
         <div className="footer-marquee [animation:footerMarquee_48s_linear_infinite] flex whitespace-nowrap will-change-transform w-max">
-          <div className="flex font-display font-medium tracking-tight leading-none text-cream/[0.07] text-[clamp(3.5rem,10vw,8rem)]">
+          <div className="flex font-display font-medium tracking-tight leading-none text-band-rule text-[clamp(3.5rem,10vw,8rem)]">
             {names}
           </div>
-          <div className="flex font-display font-medium tracking-tight leading-none text-cream/[0.07] text-[clamp(3.5rem,10vw,8rem)]">
+          <div className="flex font-display font-medium tracking-tight leading-none text-band-rule text-[clamp(3.5rem,10vw,8rem)]">
             {names}
           </div>
         </div>
@@ -47,12 +45,11 @@ const Footer = () => {
 
       {/* bottom bar */}
       <div
-        className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 py-6 border-t border-cream/10 text-xs text-sand/50"
-        style={sidePadding}
+        className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-band-rule py-6 text-xs text-band-muted"
       >
         <span>&copy; {new Date().getFullYear()} Ali Oudah</span>
         <span>
-          Kuwait City &middot; {time} <span className="text-sand/35">UTC+3</span>
+          Kuwait City &middot; {time} <span className="text-ink-subtle">UTC+3</span>
         </span>
         <div className="flex items-center gap-6">
           {links.map((l) => (
@@ -62,7 +59,7 @@ const Footer = () => {
               {...(l.href.startsWith('http')
                 ? { target: '_blank', rel: 'noopener noreferrer' }
                 : {})}
-              className="hover:text-cream transition-colors duration-150"
+              className="hover:text-band-ink transition-colors duration-150"
             >
               {l.label}
             </a>
